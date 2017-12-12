@@ -24,7 +24,7 @@ define( ["assets"], function(assets) {
    var moveX =0, moveY=0, angle=0, accelX=0, accelY=0, dirX=0, dirY=0, mapPosition=0;
 
    var Key = {
-      pressed: [0,0,0],
+      pressed: [],
 
       LEFT: 37,
       UP: 38,
@@ -32,19 +32,22 @@ define( ["assets"], function(assets) {
       DOWN: 40,
       SPACE: 32,
 
-      isDown: function(keyCode) {
-         return this.pressed[key];
+      isDown: function(keycode) {
+         return this.pressed[keycode];
       },
 
       onKeyDown: function(event) {
-         this.pressed[event.keyCode] = true;
-         event.preventDefault();
+         if (event.keyCode < 100) {
+            this.pressed[event.keyCode] = true;
+            event.preventDefault();
+         }
       },
 
       onKeyUp: function(event) {
-
-         this.pressed[event.keyCode]=0;
-         event.preventDefault();
+         if (event.keyCode < 100) {
+            this.pressed[event.keyCode]=0;
+            event.preventDefault();
+         }
       }
    };
 
@@ -128,6 +131,8 @@ define( ["assets"], function(assets) {
    function update() {
       //console.log(entity.x);
       let movingX = 0, movingY = 0;
+      let curdirX = 0, curdirY =0;
+
 
       if (Key.pressed[Key.LEFT]===true) {
          accelX -= ACCELERATION;
@@ -155,15 +160,15 @@ define( ["assets"], function(assets) {
          movingY =1;
       }
 
-
-
       mapPosition -=MAPSPEED*accelX;
 
       angle = (angle>10) ? 10 : angle;
       angle = (angle<-10) ? -10 : angle;
 
-      if (!movingX){
-         accelX += (-dirX)*DECELERATION;
+      if (!movingX) {
+         //-- do this without dirX to prevent keyboard lock
+         //accelX += (-dirX)*DECELERATION;
+         accelX = (accelX>0) ? accelX-DECELERATION : accelX+DECELERATION;
          accelX = (accelX<0.1 && accelX>-0.1) ? 0.0 : accelX;
 
          if (angle>0) {
@@ -173,9 +178,12 @@ define( ["assets"], function(assets) {
          }
       }
       if (!movingY){
-         accelY += (-dirY)*DECELERATION;
+         // accelY += (-dirY)*DECELERATION;
+         accelY = (accelY>0) ? accelY-DECELERATION : accelY+DECELERATION;
          accelY = (accelY<0.1 && accelY>-0.1) ? 0.0 : accelY;
       }
+
+
 
       entity.x = entity.x + accelX*VELOCITY;
       entity.y = entity.y + accelY*VELOCITY + GRAVITY; //slowly fall
