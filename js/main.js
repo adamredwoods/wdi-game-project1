@@ -1,5 +1,4 @@
 
-
 require(["game"], function(game,ufo,human) {
 
    var stage, canvas, queue;
@@ -19,16 +18,31 @@ require(["game"], function(game,ufo,human) {
       // queue.loadFile({id:"sound", src:"http://path/to/sound.mp3"});
       queue.loadManifest([
           {id: "ufo", src:"./img/alien.png"},
-          {id: "human", src:"./img/human.png"}
+          {id: "human", src:"./img/human.png"},
+          {id: "bg", src:"./img/star-bg.png"}
       ]);
+
+
    }
 
    function loadComplete() {
       //  createjs.Sound.play("sound");
-       game.allImages.human = queue.getResult("human");
-       game.allImages.ufo = queue.getResult("ufo");
+      game.allImages.human = queue.getResult("human");
+      game.allImages.bg = queue.getResult("bg");
 
-       game.start(stage);
+      var data = {
+         images: ["./img/alien.png"],
+         frames: {width:256, height:194, regX: 128, regY: 97},
+         framerate: 12,
+         animations: {
+             run: [0,2]
+         }
+      };
+      game.allImages.ufo =  new createjs.SpriteSheet(data);
+      // new createjs.Sprite(spriteSheet, "run");
+
+      game.start(stage);
+
    }
 
 
