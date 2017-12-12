@@ -1,4 +1,4 @@
-define(["ufo","human"], function(ufo,human) {
+define(["ufo","human", "assets"], function(ufo, human, assets) {
 
    var MAXLAND = 10;
 
@@ -27,7 +27,7 @@ define(["ufo","human"], function(ufo,human) {
       createjs.Ticker.timingMode = createjs.Ticker.RAF;
 
       initLandscape();
-      ufo.init(stage, allImages.ufo);
+      ufo.init(stage);
 
    }
 
@@ -35,16 +35,16 @@ define(["ufo","human"], function(ufo,human) {
       if(!landscape[0]) {
 
          landscapeStars = new createjs.Container();
-         landscapeStars.addChild(new createjs.Bitmap(allImages.bg));
-         var stars2 = landscapeStars.addChild(new createjs.Bitmap(allImages.bg));
+         landscapeStars.addChild(new createjs.Bitmap(assets.images.bg));
+         var stars2 = landscapeStars.addChild(new createjs.Bitmap(assets.images.bg));
          stars2.x = 512;
-         stars2 = landscapeStars.addChild(new createjs.Bitmap(allImages.bg));
+         stars2 = landscapeStars.addChild(new createjs.Bitmap(assets.images.bg));
          stars2.x = 1024;
          stage.addChild(landscapeStars);
 
          landscapeStars2 = new createjs.Container();
-         landscapeStars2.addChild(new createjs.Bitmap(allImages.bg));
-         var stars2 = landscapeStars2.addChild(new createjs.Bitmap(allImages.bg));
+         landscapeStars2.addChild(new createjs.Bitmap(assets.images.bg));
+         var stars2 = landscapeStars2.addChild(new createjs.Bitmap(assets.images.bg));
          stars2.x = 512;
          stage.addChild(landscapeStars2);
          landscapeStars2.x = -1024;
@@ -53,7 +53,7 @@ define(["ufo","human"], function(ufo,human) {
          hill.beginFill("#403530").drawEllipse(0,405,500,360);
          hill = new createjs.Shape(hill);
 
-         let tree = new createjs.Bitmap(allImages.tree);
+         let tree = new createjs.Bitmap(assets.images.tree);
          tree.regY = 256;
 
          let canvasWidth = stage.canvas.width;
@@ -113,7 +113,6 @@ define(["ufo","human"], function(ufo,human) {
    }
 
    return {
-      start: start,
-      allImages: allImages
+      start: start
    }
 });

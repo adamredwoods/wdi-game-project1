@@ -1,5 +1,5 @@
 
-require(["game"], function(game,ufo,human) {
+require(["game", "assets"], function(game,assets) {
 
    var stage, canvas, queue;
 
@@ -20,7 +20,8 @@ require(["game"], function(game,ufo,human) {
           {id: "ufo", src:"./img/alien.png"},
           {id: "human", src:"./img/human.png"},
           {id: "bg", src:"./img/star-bg.png"},
-          {id: "tree", src:"./img/tree.png"}
+          {id: "tree", src:"./img/tree.png"},
+          {id: "beam", src:"./img/beam.png"}
       ]);
 
 
@@ -28,10 +29,9 @@ require(["game"], function(game,ufo,human) {
 
    function loadComplete() {
       //  createjs.Sound.play("sound");
-      game.allImages.human = queue.getResult("human");
-      game.allImages.bg = queue.getResult("bg");
-      game.allImages.tree = queue.getResult("tree");
-
+      assets.images.human = queue.getResult("human");
+      assets.images.bg = queue.getResult("bg");
+      assets.images.tree = queue.getResult("tree");
 
       var data = {
          images: ["./img/alien.png"],
@@ -41,8 +41,20 @@ require(["game"], function(game,ufo,human) {
              run: [0,2]
          }
       };
-      game.allImages.ufo =  new createjs.SpriteSheet(data);
+      assets.images.ufo =  new createjs.SpriteSheet(data);
       // new createjs.Sprite(spriteSheet, "run");
+
+
+      data = {
+         images: ["./img/beam.png"],
+         frames: {width:128, height:128, regX: 64, regY: 0},
+         framerate: 12,
+         animations: {
+             run: [0,2]
+         }
+      };
+      assets.images.beam =  new createjs.SpriteSheet(data);
+
 
       game.start(stage);
 

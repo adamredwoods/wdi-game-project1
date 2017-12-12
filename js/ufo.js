@@ -1,4 +1,4 @@
-define( function() {
+define( ["assets"], function(assets) {
 
    var VELOCITY = 10.0;
    var ACCELERATION = 0.05;
@@ -13,7 +13,7 @@ define( function() {
       left: 200,
       right: 1200-400
    };
-   var entity;
+   var entity, beam;
    var stage;
    var moveX =0, moveY=0, angle=0, accelX=0, accelY=0, dirX=0, dirY=0, mapPosition=0;
 
@@ -24,6 +24,7 @@ define( function() {
       UP: 38,
       RIGHT: 39,
       DOWN: 40,
+      SPACE: 32,
 
       isDown: function(keyCode) {
          return this.pressed[key];
@@ -41,11 +42,11 @@ define( function() {
       }
    };
 
-   function init(st, img) {
+   function init(st) {
       stage = st;
 
       if (!entity) {
-         entity = new createjs.Sprite(img, "run");
+         entity = new createjs.Sprite(assets.images.ufo, "run");
          stage.addChild(entity);
 
          keyboardListeners();
@@ -152,4 +153,4 @@ define( function() {
       update : update,
       getMoving: getMoving
    }
-})
+});
