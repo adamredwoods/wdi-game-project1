@@ -1,6 +1,6 @@
 define(["ufo","human", "assets"], function(ufo, human, assets) {
 
-   var MAXLAND = 10;
+   var STARS_OFFSET = -512;
 
    var stage;
    var s;
@@ -16,27 +16,46 @@ define(["ufo","human", "assets"], function(ufo, human, assets) {
    function stageTick(event) {
       updateLandscape();
       ufo.update();
+      human.update(ufo.getMoveData().mapPosition);
+      updateCollisions();
 
       stage.update(event); //-- make sure event is passed to update
    }
 
+   //--
+   //-- start and init everything
+   //
    function start(st) {
       stage = st;
 
       createjs.Ticker.addEventListener("tick", stageTick);
-      createjs.Ticker.timingMode = createjs.Ticker.RAF;
+      //createjs.Ticker.timingMode = createjs.Ticker.RAF;
+      createjs.Ticker.framerate = FPS;
 
       initLandscape();
       ufo.init(stage);
+      human.init(stage, assets.TERRAIN_SIZE);
 
    }
 
+   function getWorldPosition() {
+      return ufo.getMoveData().mapPosition;
+   }
+
+
+
+   //
+   //-- start setting up the landscape and terrain
+   //
    function initLandscape() {
       if(!landscape[0]) {
 
+         var terrainWidth = stage.canvas.width;
+
          landscapeStars = new createjs.Container();
          landscapeStars.addChild(new createjs.Bitmap(assets.images.bg));
-         var stars2 = landscapeStars.addChild(new createjs.Bitmap(assets.images.bg));
+
+         let stars2 = landscapeStars.addChild(new createjs.Bitmap(assets.images.bg));
          stars2.x = 512;
          stars2 = landscapeStars.addChild(new createjs.Bitmap(assets.images.bg));
          stars2.x = 1024;
@@ -44,34 +63,31 @@ define(["ufo","human", "assets"], function(ufo, human, assets) {
 
          landscapeStars2 = new createjs.Container();
          landscapeStars2.addChild(new createjs.Bitmap(assets.images.bg));
-         var stars2 = landscapeStars2.addChild(new createjs.Bitmap(assets.images.bg));
+
+         stars2 = landscapeStars2.addChild(new createjs.Bitmap(assets.images.bg));
          stars2.x = 512;
          stage.addChild(landscapeStars2);
          landscapeStars2.x = -1024;
 
-         var hill = new createjs.Graphics();
+         let hill = new createjs.Graphics();
          hill.beginFill("#403530").drawEllipse(0,405,500,360);
          hill = new createjs.Shape(hill);
 
          let tree = new createjs.Bitmap(assets.images.tree);
          tree.regY = 256;
 
-         let canvasWidth = stage.canvas.width;
-
-         for (var i=0; i< MAXLAND; i++) {
+         for (var i=0; i< assets.TERRAIN_SIZE; i++) {
             landscape[i] = new createjs.Container();
-            var g = new createjs.Graphics();
-            g.beginFill("#403530");
-            g.rect(0, stage.canvas.height*0.7, canvasWidth+1.0, stage.canvas.height);
+
             // g.beginFill(createjs.Graphics.getRGB(255,0,0));
-            landscape[i].addChild(new createjs.Shape(g));
+            landscape[i].addChild(assets.groundShape());
 
             let n = (Math.random()*2|0)+5;
             let xflip=1.0;
             for (var j=0; j< n; j++){
                tree = tree.clone();
                landscape[i].addChild(tree);
-               tree.x = Math.random()*canvasWidth|0;
+               tree.x = Math.random()*terrainWidth|0;
                tree.y = 490;
                tree.scaleX = tree.scaleY = 0.25+Math.random()*0.5;
                tree.scaleX *= xflip;
@@ -82,17 +98,24 @@ define(["ufo","human", "assets"], function(ufo, human, assets) {
             // hill.x = Math.random()*200;
             // landscape[i].addChild(hill);
 
-            landscape[i].x = landscape[i].offset = -canvasWidth*i;
+            landscape[i].offset = -terrainWidth*i;
 
             stage.addChild(landscape[i]);
          }
+
+         //-- make border terrain tiles
+         let n = assets.TERRAIN_SIZE;
+         landscape[n] = new createjs.Container();
+         landscape[n].addChild(assets.groundShape());
+         landscape[n].offset = terrainWidth;
+         stage.addChild(landscape[n]);
 
       }
    }
 
    function updateLandscape() {
-      landscapeStars.x -= ufo.getMoving().accelX;
-      landscapeStars2.x -= ufo.getMoving().accelX;
+      landscapeStars.x = ufo.getMoveData().mapPosition*0.1+STARS_OFFSET;
+      landscapeStars2.x = ufo.getMoveData().mapPosition*0.1+STARS_OFFSET;
       if (landscapeStars2>0) {
          landscapeStars.x = 0;
          landscapeStars2.x = -1024;
@@ -101,18 +124,21 @@ define(["ufo","human", "assets"], function(ufo, human, assets) {
          landscapeStars.x = 1024;
          landscapeStars2.x = 0;
       }
-// console.log(ufo.getMoving().mapPosition);
-      for (var i=0; i< MAXLAND; i++) {
-         landscape[i].x = ufo.getMoving().mapPosition + landscape[i].offset;
 
+      for (var i=0; i< landscape.length; i++) {
+         landscape[i].x = ufo.getMoveData().mapPosition + landscape[i].offset;
       }
    }
 
-   function updateAll() {
-
+   function updateCollisions() {
+      if (ufo.getMoveData().beamAlpha> 0.1) {
+         human.checkBeamCollision(ufo.getBeam());
+      }
    }
 
+
    return {
-      start: start
+      start: start,
+      getWorldPosition: getWorldPosition
    }
 });

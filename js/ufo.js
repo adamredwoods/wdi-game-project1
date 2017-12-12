@@ -1,11 +1,14 @@
 define( ["assets"], function(assets) {
 
-   var VELOCITY = 10.0;
-   var ACCELERATION = 0.05;
-   var DECELERATION = 0.01;
-   var ANGLEMOVE = 0.5;
-   var MAPSPEED = 10.0;
-   var GRAVITY = 0.5;
+   //var FPS = 24;
+   var VELOCITY = 10.0*(60/FPS);
+   var ACCELERATION = 0.05*(60/FPS);
+   var DECELERATION = 0.01*(60/FPS);
+   var ANGLEMOVE = 0.5*(60/FPS);
+   var MAPSPEED = 10.0*(60/FPS);
+   var GRAVITY = 0.5*(60/FPS);
+   var BEAMALPHASPEED = 0.05*(60/FPS);
+   var SHADOWOFFSET = 80;
 
    var BOUNDS = {
       top: 100,
@@ -13,7 +16,10 @@ define( ["assets"], function(assets) {
       left: 200,
       right: 1200-400
    };
-   var entity, beam;
+
+   var entity;
+   var entityShadow;
+   var beam, beamAlpha=0.0, beamMask;
    var stage;
    var moveX =0, moveY=0, angle=0, accelX=0, accelY=0, dirX=0, dirY=0, mapPosition=0;
 
@@ -46,22 +52,48 @@ define( ["assets"], function(assets) {
       stage = st;
 
       if (!entity) {
+         entityShadow = new createjs.Bitmap(assets.images.shadow);
+         entityShadow.alpha = 0.1;
+         entityShadow.y = BOUNDS.bottom+50;
+         entityShadow.scaleX = entityShadow.scaleY = 3;
+         stage.addChild(entityShadow);
+
          entity = new createjs.Sprite(assets.images.ufo, "run");
          stage.addChild(entity);
 
+         beam = new createjs.Container();
+         var b2 = new createjs.Sprite(assets.images.beam, "run");
+         //stage.addChild(beam);
+         beam.addChild(b2);
+
+         beam.setBounds(0,-100,100,500);
+         //console.log(beam);
+
+         var g = new createjs.Graphics().beginFill("#ff0000").drawRect(-100, 0, 200, 200);
+         beamMask = new createjs.Shape(g);
+         beam.addChild(beamMask);
+         b2.mask = beamMask;
+         beamMask.visible = false;
+         stage.addChild(beam);
+         beam.alpha = 0.0;
+
+
+
          keyboardListeners();
       }
+
       entity.x = 300;
       entity.y = 200;
       entity.rotation = 10;
    }
 
-   function getMoving() {
+   function getMoveData() {
       return {
          accelX: accelX,
          accelY: accelY,
          dirX: dirX,
          dirY: dirY,
+         beamAlpha: beamAlpha,
          mapPosition: mapPosition
       }
    }
@@ -72,6 +104,25 @@ define( ["assets"], function(assets) {
       entity.x = (entity.x<BOUNDS.left) ? BOUNDS.left : entity.x;
       entity.x = (entity.x>BOUNDS.right) ? BOUNDS.right : entity.x;
 
+      if (mapPosition < -stage.canvas.width*0.5) {
+         //entity.x = BOUNDS.right;
+         mapPosition = -stage.canvas.width*0.5;
+      }
+   }
+
+   function updateBeam() {
+      beam.x = entity.x;
+      beam.y = entity.y+100;
+
+      if (Key.pressed[Key.SPACE]===true) {
+         beamAlpha = (beamAlpha<1.0) ? beamAlpha+BEAMALPHASPEED : 1.0;
+      } else {
+         beamAlpha = (beamAlpha>0.0) ? beamAlpha-BEAMALPHASPEED : 0.0;
+      }
+      beam.alpha = beamAlpha;
+
+      beamMask.scaleY = (720-entity.y)/720;
+      beam.scaleY = (600-entity.y)/600*2.8;
    }
 
    function update() {
@@ -126,12 +177,8 @@ define( ["assets"], function(assets) {
          accelY = (accelY<0.1 && accelY>-0.1) ? 0.0 : accelY;
       }
 
-      //if (dirX>0.0) {
-      //slowly fall
-
-         entity.x = entity.x + accelX*VELOCITY;
-         entity.y = entity.y + accelY*VELOCITY + GRAVITY;
-      //}
+      entity.x = entity.x + accelX*VELOCITY;
+      entity.y = entity.y + accelY*VELOCITY + GRAVITY; //slowly fall
 
       accelX = (accelX>1.0) ? 1.0 : accelX;
       accelX = (accelX<-1.0) ? -1.0 : accelX;
@@ -141,6 +188,13 @@ define( ["assets"], function(assets) {
       boundsCheck();
 
       entity.rotation = angle;
+      entityShadow.x = entity.x - SHADOWOFFSET;
+
+      updateBeam();
+   }
+
+   function getBeam() {
+      return beam;
    }
 
    function keyboardListeners() {
@@ -151,6 +205,7 @@ define( ["assets"], function(assets) {
    return {
       init : init,
       update : update,
-      getMoving: getMoving
+      getMoveData: getMoveData,
+      getBeam: getBeam
    }
 });
