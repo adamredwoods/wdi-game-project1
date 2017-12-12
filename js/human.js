@@ -8,7 +8,7 @@ define( ["assets", "game"], function(assets, game) {
    var stage;
    var numHumans = 20;
    var human = [];
-
+   var testblock;
 
    function init(st, maxland) {
       stage = st;
@@ -22,6 +22,10 @@ define( ["assets", "game"], function(assets, game) {
          human[i].offset = -Math.random()*maxland*stage.canvas.width;
          human[i].y = 500;
       }
+
+      var g = new createjs.Graphics();
+      testblock = new createjs.Shape(g.f("#ff0000").drawRect(0,0,10,10));
+      stage.addChild(testblock);
    }
 
    function checkBounds(i) {
@@ -100,19 +104,34 @@ define( ["assets", "game"], function(assets, game) {
    }
 
    function checkUFOCollision(ufo) {
+      var fake = new createjs.Container();
+      fake.setBounds(-40,0,160,60);
+      fake.x = ufo.x;
+      fake.y = ufo.y;
+
+      let total=0;
+      // testblock.x = fake.getBounds().width+fake.x;
+      // testblock.y = fake.getBounds().height+fake.y;
+
       for (var i=0; i<numHumans; i++) {
 
-         if( checkCollision(human[i], ufo)) {
-            human[i].captured = true;
-            // console.log("hit"+i);
+         if( human[i].visible && checkCollision(human[i], fake)) {
+            if (!human[i].captured) {
+               human[i].captured = true;
+               total++;
+            }
+            //console.log("hit"+i);
          }
       }
+
+      return total;
    }
 
 
    return {
       init: init,
       update: update,
-      checkBeamCollision: checkBeamCollision
+      checkBeamCollision: checkBeamCollision,
+      checkUFOCollision : checkUFOCollision
    }
 });

@@ -205,6 +205,10 @@ define( ["assets"], function(assets) {
       return beam;
    }
 
+   function getUFO() {
+      return entity;
+   }
+
    function keyboardListeners() {
       document.addEventListener("keydown", Key.onKeyDown.bind(Key));
       document.addEventListener('keyup', Key.onKeyUp.bind(Key));
@@ -214,6 +218,7 @@ define( ["assets"], function(assets) {
       init : init,
       update : update,
       getMoveData: getMoveData,
-      getBeam: getBeam
+      getBeam: getBeam,
+      getUFO : getUFO
    }
 });

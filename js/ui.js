@@ -40,6 +40,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
    function updateScoreLayer(sc) {
       stage.setChildIndex( scoreLayer, stage.getNumChildren()-1);
       scoreLayer.visible = true;
+      
       let s = ""+sc;
       while (s.length < 3) {
          s = "0"+s;

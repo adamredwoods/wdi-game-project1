@@ -20,6 +20,7 @@ define(["ufo","human", "assets", "ui"], function(ufo, human, assets, ui) {
       ufo.update();
       human.update(ufo.getMoveData().mapPosition);
       updateCollisions();
+      updateUI();
 
       stage.update(event); //-- make sure event is passed to update
    }
@@ -138,6 +139,7 @@ define(["ufo","human", "assets", "ui"], function(ufo, human, assets, ui) {
    function updateCollisions() {
       if (ufo.getMoveData().beamAlpha> 0.1) {
          human.checkBeamCollision(ufo.getBeam());
+         score += human.checkUFOCollision(ufo.getUFO());
       }
    }
 
