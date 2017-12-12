@@ -1,4 +1,4 @@
-define(["ufo","human", "assets"], function(ufo, human, assets) {
+define(["ufo","human", "assets", "ui"], function(ufo, human, assets, ui) {
 
    var STARS_OFFSET = -512;
 
@@ -11,6 +11,8 @@ define(["ufo","human", "assets"], function(ufo, human, assets) {
       human:0,
       bg:0
    };
+
+   var score=0;
 
 
    function stageTick(event) {
@@ -32,9 +34,12 @@ define(["ufo","human", "assets"], function(ufo, human, assets) {
       //createjs.Ticker.timingMode = createjs.Ticker.RAF;
       createjs.Ticker.framerate = FPS;
 
+      ui.init(stage);
       initLandscape();
       ufo.init(stage);
       human.init(stage, assets.TERRAIN_SIZE);
+
+      updateUI();
 
    }
 
@@ -134,6 +139,10 @@ define(["ufo","human", "assets"], function(ufo, human, assets) {
       if (ufo.getMoveData().beamAlpha> 0.1) {
          human.checkBeamCollision(ufo.getBeam());
       }
+   }
+
+   function updateUI() {
+      ui.updateScoreLayer(score);
    }
 
 

@@ -9,6 +9,7 @@ define( ["assets", "game"], function(assets, game) {
    var numHumans = 20;
    var human = [];
 
+
    function init(st, maxland) {
       stage = st;
 
@@ -31,30 +32,33 @@ define( ["assets", "game"], function(assets, game) {
    function update(worldPosition) {
       for (i=0; i<numHumans; i++) {
 
+         if (!human[i].captured) {
+            if (human[i].dirX ===0) {
+               human[i].dirX = Math.floor(Math.random() *1.99);
+               human[i].dirX = (human[i].dirX ===0) ? -1 : 1;
+            }
+            if (!human[i].dirX || Math.random()*HUMAN_RANDOM_MOVE < 1.0) {
+               human[i].dirX =0;
+            }
 
-         if (human[i].dirX ===0) {
-            human[i].dirX = Math.floor(Math.random() *1.99);
-            human[i].dirX = (human[i].dirX ===0) ? -1 : 1;
-         }
-         if (!human[i].dirX || Math.random()*HUMAN_RANDOM_MOVE < 1.0) {
-            human[i].dirX =0;
-         }
-
-         human[i].offset += human[i].dirX*HUMAN_SPEED;
-         human[i].x = worldPosition + human[i].offset;
+            human[i].offset += human[i].dirX*HUMAN_SPEED;
+            human[i].x = worldPosition + human[i].offset;
 
 
-         if (human[i].beamingStart ===true) {
-            human[i].y -= HUMAN_FLY_SPEED;
-            human[i].dirX =0;
+            if (human[i].beamingStart ===true) {
+               human[i].y -= HUMAN_FLY_SPEED;
+               human[i].dirX =0;
+            } else {
+               human[i].y += GRAVITY;
+            }
+            //--always set to false afterwards
+            human[i].beamingStart = false;
+
+            checkBounds(i);
+
          } else {
-            human[i].y += GRAVITY;
+            human[i].visible = false;
          }
-         //--always set to false afterwards
-         human[i].beamingStart = false;
-
-         checkBounds(i);
-
       }
    }
 
@@ -90,6 +94,16 @@ define( ["assets", "game"], function(assets, game) {
 
          if( checkCollision(human[i], beam)) {
             human[i].beamingStart = true;
+            // console.log("hit"+i);
+         }
+      }
+   }
+
+   function checkUFOCollision(ufo) {
+      for (var i=0; i<numHumans; i++) {
+
+         if( checkCollision(human[i], ufo)) {
+            human[i].captured = true;
             // console.log("hit"+i);
          }
       }

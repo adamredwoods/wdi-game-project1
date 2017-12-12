@@ -1,8 +1,10 @@
-define( function() {
+define([], function() {
 
    var TERRAIN_SIZE = 10;
 
    var images = {};
+
+   var bitmapFont;
 
    var files = [
        {id: "ufo", src:"./img/alien.png"},
@@ -10,6 +12,7 @@ define( function() {
        {id: "bg", src:"./img/star-bg.png"},
        {id: "shadow", src:"./img/shadow.png"},
        {id: "tree", src:"./img/tree.png"},
+       {id: "vt323", src:"./img/vt323_32pt.png"},
        {id: "beam", src:"./img/beam.png"}
    ]
 
@@ -24,6 +27,7 @@ define( function() {
       images.bg = queue.getResult("bg");
       images.tree = queue.getResult("tree");
       images.shadow = queue.getResult("shadow");
+
 
       var data = {
          images: ["./img/alien.png"],
@@ -51,10 +55,13 @@ define( function() {
          frames: {width:64, height:64, regX: 32, regY: 0},
          framerate: 8,
          animations: {
-             run: [0,1]
+             run: [0,1],
+             static: [0]
          }
       };
       images.human =  new createjs.SpriteSheet(data);
+
+
    }
 
 
