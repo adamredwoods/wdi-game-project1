@@ -19,7 +19,8 @@ require(["game"], function(game,ufo,human) {
       queue.loadManifest([
           {id: "ufo", src:"./img/alien.png"},
           {id: "human", src:"./img/human.png"},
-          {id: "bg", src:"./img/star-bg.png"}
+          {id: "bg", src:"./img/star-bg.png"},
+          {id: "tree", src:"./img/tree.png"}
       ]);
 
 
@@ -29,6 +30,8 @@ require(["game"], function(game,ufo,human) {
       //  createjs.Sound.play("sound");
       game.allImages.human = queue.getResult("human");
       game.allImages.bg = queue.getResult("bg");
+      game.allImages.tree = queue.getResult("tree");
+
 
       var data = {
          images: ["./img/alien.png"],
