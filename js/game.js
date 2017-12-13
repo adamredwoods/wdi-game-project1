@@ -1,6 +1,7 @@
-define(["ufo","human", "assets", "ui"], function(ufo, human, assets, ui) {
+define(["ufo", "human", "assets", "ui", "collision"], function(ufo, human, assets, ui, collision) {
 
    var STARS_OFFSET = -512;
+   var MOTHERSHIP_SPEED = 3.0;
 
    var stage;
    var s;
@@ -12,6 +13,8 @@ define(["ufo","human", "assets", "ui"], function(ufo, human, assets, ui) {
       bg:0
    };
 
+   var mothership;
+
    var score=0;
 
 
@@ -21,6 +24,7 @@ define(["ufo","human", "assets", "ui"], function(ufo, human, assets, ui) {
       human.update(ufo.getMoveData().mapPosition);
       updateCollisions();
       updateUI();
+      updateMothership();
 
       stage.update(event); //-- make sure event is passed to update
    }
@@ -116,7 +120,27 @@ define(["ufo","human", "assets", "ui"], function(ufo, human, assets, ui) {
          landscape[n].offset = terrainWidth;
          stage.addChild(landscape[n]);
 
+         mothership = new createjs.Sprite(assets.images.mothership, "run");
+         landscape[n].addChild(mothership);
+         mothership.x = terrainWidth * 0.5;
+         mothership.dirX = -1;
+         mothership.offset = 0;
+         mothership.setBounds(70,98,120,80);
+
+         collision.setStageForTest(stage);
       }
+   }
+
+   function updateMothership() {
+      var terrainWidth = stage.canvas.width;
+      mothership.x += mothership.dirX*MOTHERSHIP_SPEED;
+      if (mothership.x > terrainWidth*0.6) {
+         mothership.dirX = -1;
+      }
+      if (mothership.x < 0) {
+         mothership.dirX = 1;
+      }
+      //mothership.x = mothership.offset + ufo.getMoveData().mapPosition;
    }
 
    function updateLandscape() {
@@ -139,8 +163,15 @@ define(["ufo","human", "assets", "ui"], function(ufo, human, assets, ui) {
    function updateCollisions() {
       if (ufo.getMoveData().beamAlpha> 0.1) {
          human.checkBeamCollision(ufo.getBeam());
-         score += human.checkUFOCollision(ufo.getUFO());
+         let sc = human.checkUFOCollision(ufo.getUFO());
+         if (sc >0) {
+            score +=sc;
+            ufo.addCaptured();
+         }
       }
+
+      let sc = ufo.checkMothershipCollision(mothership);
+      score += sc*10;
    }
 
    function updateUI() {

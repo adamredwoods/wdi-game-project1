@@ -1,4 +1,4 @@
-define( ["assets"], function(assets) {
+define( ["assets", "collision"], function(assets, collision) {
 
    //var FPS = 24;
    var VELOCITY = 10.0*(60/FPS);
@@ -21,6 +21,7 @@ define( ["assets"], function(assets) {
    var entityShadow;
    var beam, beamAlpha=0.0, beamMask;
    var stage;
+   var humanSprite;
    var moveX =0, moveY=0, angle=0, accelX=0, accelY=0, dirX=0, dirY=0, mapPosition=0;
 
    var Key = {
@@ -61,7 +62,10 @@ define( ["assets"], function(assets) {
          entityShadow.scaleX = entityShadow.scaleY = 3;
          stage.addChild(entityShadow);
 
-         entity = new createjs.Sprite(assets.images.ufo, "run");
+         entity = new createjs.Container();
+         entity.setBounds(-70,-50,160,120);
+         var ufo = new createjs.Sprite(assets.images.ufo, "run");
+         entity.addChild(ufo);
          stage.addChild(entity);
 
          beam = new createjs.Container();
@@ -80,7 +84,7 @@ define( ["assets"], function(assets) {
          stage.addChild(beam);
          beam.alpha = 0.0;
 
-
+         humanSprite = new createjs.Sprite(assets.images.human,"run");
 
          keyboardListeners();
       }
@@ -107,9 +111,9 @@ define( ["assets"], function(assets) {
       entity.x = (entity.x<BOUNDS.left) ? BOUNDS.left : entity.x;
       entity.x = (entity.x>BOUNDS.right) ? BOUNDS.right : entity.x;
 
-      if (mapPosition < -stage.canvas.width*0.5) {
+      if (mapPosition < -stage.canvas.width) {
          //entity.x = BOUNDS.right;
-         mapPosition = -stage.canvas.width*0.5;
+         mapPosition = -stage.canvas.width;
       }
    }
 
@@ -126,6 +130,14 @@ define( ["assets"], function(assets) {
 
       beamMask.scaleY = (720-entity.y)/720;
       beam.scaleY = (600-entity.y)/600*2.8;
+   }
+
+   function addCaptured() {
+      let h = humanSprite.clone();
+      entity.addChild(h);
+      entity.setChildIndex( h, 0);
+      h.x = Math.random()*50-10;
+      h.y = Math.random()*20-50;
    }
 
    function update() {
@@ -214,11 +226,20 @@ define( ["assets"], function(assets) {
       document.addEventListener('keyup', Key.onKeyUp.bind(Key));
    }
 
+   function checkMothershipCollision(ms) {
+      if(collision.checkCollision(ms,entity)) {
+         console.log(123);
+      }
+      return 0;
+   }
+
    return {
       init : init,
       update : update,
       getMoveData: getMoveData,
       getBeam: getBeam,
-      getUFO : getUFO
+      getUFO : getUFO,
+      addCaptured : addCaptured,
+      checkMothershipCollision : checkMothershipCollision
    }
 });

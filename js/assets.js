@@ -13,7 +13,8 @@ define([], function() {
        {id: "shadow", src:"./img/shadow.png"},
        {id: "tree", src:"./img/tree.png"},
        {id: "vt323", src:"./img/vt323_32pt.png"},
-       {id: "beam", src:"./img/beam.png"}
+       {id: "beam", src:"./img/beam.png"},
+       {id: "mothership", src:".img/mothership.png"}
    ]
 
    var stage;
@@ -27,6 +28,7 @@ define([], function() {
       images.bg = queue.getResult("bg");
       images.tree = queue.getResult("tree");
       images.shadow = queue.getResult("shadow");
+
 
 
       var data = {
@@ -61,6 +63,15 @@ define([], function() {
       };
       images.human =  new createjs.SpriteSheet(data);
 
+      var data = {
+         images: ["./img/mothership.png"],
+         frames: {width:512, height:256, regX: 128, regY: 0},
+         framerate: 3,
+         animations: {
+            run: [0,1]
+         }
+      };
+      images.mothership =  new createjs.SpriteSheet(data);
 
    }
 

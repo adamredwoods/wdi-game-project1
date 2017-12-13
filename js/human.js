@@ -1,4 +1,4 @@
-define( ["assets", "game"], function(assets, game) {
+define( ["assets", "game", "collision"], function(assets, game, collision) {
 
    var HUMAN_RANDOM_MOVE = 25;
    var HUMAN_SPEED = 4;
@@ -62,41 +62,16 @@ define( ["assets", "game"], function(assets, game) {
 
          } else {
             human[i].visible = false;
+
          }
       }
    }
 
-   function checkCollision(mc1, mc2) {
-
-      let b1 = mc1.getBounds();
-      let b2 = mc2.getBounds();
-
-       m1x = mc1.x+b1.x;
-       m1y = mc1.y+b1.y;
-       m1w = b1.width;
-       m1h = b1.height;
-
-       m2x = mc2.x+b2.x;
-       m2y = mc2.y+b2.y;
-       m2w = b2.width;
-       m2h = b2.height;
-
-      //  console.log(m2x,m2w);
-
-       if (    m1x >= m2x + m2w
-           ||  m1x + m1w <= m2x
-           ||  m1y >= m2y + m2h
-           ||  m1y + m1h <= m2y) {
-           return false;
-       } else {
-           return true;
-       }
-   }
 
    function checkBeamCollision(beam) {
       for (var i=0; i<numHumans; i++) {
 
-         if( checkCollision(human[i], beam)) {
+         if( collision.checkCollision(human[i], beam)) {
             human[i].beamingStart = true;
             // console.log("hit"+i);
          }
@@ -115,7 +90,7 @@ define( ["assets", "game"], function(assets, game) {
 
       for (var i=0; i<numHumans; i++) {
 
-         if( human[i].visible && checkCollision(human[i], fake)) {
+         if( human[i].visible && collision.checkCollision(human[i], fake)) {
             if (!human[i].captured) {
                human[i].captured = true;
                total++;

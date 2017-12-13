@@ -14,8 +14,6 @@ define([] , function() {
       data.animations[str] = i-32;
    }
 
-   console.log(data.animations);
-
    bitmapFont =  new createjs.SpriteSheet(data);
 
    return {
