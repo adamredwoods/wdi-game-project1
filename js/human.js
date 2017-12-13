@@ -6,21 +6,26 @@ define( ["assets", "game", "collision"], function(assets, game, collision) {
    var GRAVITY = 5;
 
    var stage;
-   var numHumans = 20;
+   var numHumans = 30;
    var human = [];
+   var maxland =0; //remember how big everything is
    var testblock;
 
-   function init(st, maxland) {
+   function init(st, _maxland) {
       stage = st;
+      maxland = _maxland;
 
       var humanSprite = new createjs.Sprite(assets.images.human,"run");
       humanSprite.setBounds(35,15,2,2);
 
       for (i=0; i<numHumans; i++) {
-         human[i] = humanSprite.clone();
-         stage.addChild(human[i]);
-         human[i].offset = -Math.random()*maxland*stage.canvas.width;
-         human[i].y = 500;
+         let hh = humanSprite.clone();
+         human.push(hh);
+         stage.addChild(hh);
+         hh.offset = -Math.random()*(maxland-1)*stage.canvas.width;
+         hh.y = 500;
+         hh.captured = false;
+         hh.beamingStart = false;
       }
 
       var g = new createjs.Graphics();
@@ -30,13 +35,15 @@ define( ["assets", "game", "collision"], function(assets, game, collision) {
 
    function checkBounds(i) {
       human[i].y = (human[i].y>500) ? 500 : human[i].y;
-
+      human[i].offset = (human[i].offset<(maxland*stage.canvas.width)) ? (maxland*stage.canvas.width) : human[i].offset;
    }
 
    function update(worldPosition) {
       for (i=0; i<numHumans; i++) {
 
          if (!human[i].captured) {
+
+            //-- move around and randomly change direction every so often
             if (human[i].dirX ===0) {
                human[i].dirX = Math.floor(Math.random() *1.99);
                human[i].dirX = (human[i].dirX ===0) ? -1 : 1;
@@ -102,11 +109,16 @@ define( ["assets", "game", "collision"], function(assets, game, collision) {
       return total;
    }
 
+   function getTotalHumans() {
+      return numHumans;
+   }
+
 
    return {
       init: init,
       update: update,
       checkBeamCollision: checkBeamCollision,
-      checkUFOCollision : checkUFOCollision
+      checkUFOCollision : checkUFOCollision,
+      getTotalHumans : getTotalHumans
    }
 });

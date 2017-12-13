@@ -3,7 +3,10 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
    var stage;
 
    var scoreLayer, introLayer;
-   var txt_score;
+   var txt = {
+      score: 0,
+      humansRemaining: 0
+   };
    var humanIcon;
 
    function init(_stage){
@@ -18,34 +21,46 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       //var vt = new createjs.Bitmap(assets.images.vt323);
       console.log(bitmapFont.bitmapFont);
 
-      txt_score = new createjs.BitmapText("",bitmapFont.bitmapFont);
-      scoreLayer.addChild(txt_score);
+      txt.score = new createjs.BitmapText("",bitmapFont.bitmapFont);
+      scoreLayer.addChild(txt.score);
       stage.addChild(scoreLayer);
-      txt_score.x = stageWidth*0.8;
-      txt_score.y = stageWidth*0.02;
+      txt.score.x = stageWidth*0.8;
+      txt.score.y = stageWidth*0.02;
+
+      txt.humansRemaining = new createjs.BitmapText("",bitmapFont.bitmapFont);
+      scoreLayer.addChild(txt.humansRemaining);
+      stage.addChild(scoreLayer);
+      txt.humansRemaining.x = stageWidth*0.1;
+      txt.humansRemaining.y = stageWidth*0.02;
 
 
-      txt_score.text="000";
+      txt.score.text="000";
 
       humanIcon = new createjs.Sprite(assets.images.human, "static");
       scoreLayer.addChild(humanIcon);
-      humanIcon.x = txt_score.x - 20;
-      humanIcon.y = txt_score.y-10;
+      humanIcon.x = txt.humansRemaining.x - 20;
+      humanIcon.y = txt.humansRemaining.y -10;
 
       // var g = new createjs.Graphics();
       // g.f("#ff0000").drawRect(0,0,100,100);
       // scoreLayer.addChild(new createjs.Shape(g));
    }
 
-   function updateScoreLayer(sc) {
-      stage.setChildIndex( scoreLayer, stage.getNumChildren()-1);
-      scoreLayer.visible = true;
-      
+   function addZeros(sc, num) {
       let s = ""+sc;
-      while (s.length < 3) {
+      while (s.length < num) {
          s = "0"+s;
       }
-      txt_score.text=s;
+      return s;
+   }
+
+   function updateScoreLayer(score,humansLeft) {
+      //-- keep these layers over all other things on the stage
+      stage.setChildIndex( scoreLayer, stage.getNumChildren()-1);
+      scoreLayer.visible = true;
+
+      txt.score.text=addZeros(score,3);
+      txt.humansRemaining.text = addZeros(humansLeft,3);
    }
 
    return {

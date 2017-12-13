@@ -21,7 +21,7 @@ define( ["assets", "collision"], function(assets, collision) {
    var entityShadow;
    var beam, beamAlpha=0.0, beamMask;
    var stage;
-   var humanSprite;
+   var humanSprite, capturedList=[], mothershipTick=0;
    var moveX =0, moveY=0, angle=0, accelX=0, accelY=0, dirX=0, dirY=0, mapPosition=0;
 
    var Key = {
@@ -132,12 +132,31 @@ define( ["assets", "collision"], function(assets, collision) {
       beam.scaleY = (600-entity.y)/600*2.8;
    }
 
+   //-- adds a sprite into the player ufo
    function addCaptured() {
-      let h = humanSprite.clone();
+      let h=humanSprite.clone()
+      capturedList.push(h);
       entity.addChild(h);
       entity.setChildIndex( h, 0);
       h.x = Math.random()*50-10;
       h.y = Math.random()*20-50;
+   }
+
+   //-- move these off-screen
+   function removeCaptured() {
+      if (capturedList.length>0 && mothershipTick<createjs.Ticker.getTime()) {
+         let h = capturedList.pop();
+         entity.removeChild();
+         // capturedList.pop();
+         stage.addChild(h);
+         h.x = entity.x+20;
+         h.y = entity.y-50;
+         createjs.Tween.get(h).to({y:-100, rotation: Math.random()*720},3000);
+         mothershipTick = createjs.Ticker.getTime()+1000;
+
+         return 1;
+      }
+      return 0;
    }
 
    function update() {
@@ -226,11 +245,13 @@ define( ["assets", "collision"], function(assets, collision) {
       document.addEventListener('keyup', Key.onKeyUp.bind(Key));
    }
 
+   //-- return a score if human is delivered to mothership
    function checkMothershipCollision(ms) {
+      let s=0;
       if(collision.checkCollision(ms,entity)) {
-         console.log(123);
+         s=removeCaptured();
       }
-      return 0;
+      return s;
    }
 
    return {

@@ -1,4 +1,4 @@
-define(["ufo", "human", "assets", "ui", "collision"], function(ufo, human, assets, ui, collision) {
+define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, human, tank, assets, ui, collision) {
 
    var STARS_OFFSET = -512;
    var MOTHERSHIP_SPEED = 3.0;
@@ -20,11 +20,14 @@ define(["ufo", "human", "assets", "ui", "collision"], function(ufo, human, asset
 
    function stageTick(event) {
       updateLandscape();
+
       ufo.update();
       human.update(ufo.getMoveData().mapPosition);
-      updateCollisions();
-      updateUI();
+      tank.update(ufo.getMoveData().mapPosition);
       updateMothership();
+
+      updateUI();
+      updateCollisions();
 
       stage.update(event); //-- make sure event is passed to update
    }
@@ -43,6 +46,7 @@ define(["ufo", "human", "assets", "ui", "collision"], function(ufo, human, asset
       initLandscape();
       ufo.init(stage);
       human.init(stage, assets.TERRAIN_SIZE);
+      tank.init(stage, assets.TERRAIN_SIZE);
 
       updateUI();
 
@@ -163,19 +167,17 @@ define(["ufo", "human", "assets", "ui", "collision"], function(ufo, human, asset
    function updateCollisions() {
       if (ufo.getMoveData().beamAlpha> 0.1) {
          human.checkBeamCollision(ufo.getBeam());
-         let sc = human.checkUFOCollision(ufo.getUFO());
-         if (sc >0) {
-            score +=sc;
+         if (human.checkUFOCollision(ufo.getUFO()) >0) {
             ufo.addCaptured();
          }
       }
 
       let sc = ufo.checkMothershipCollision(mothership);
-      score += sc*10;
+      score += sc;
    }
 
    function updateUI() {
-      ui.updateScoreLayer(score);
+      ui.updateScoreLayer(score, human.getTotalHumans()-score);
    }
 
 

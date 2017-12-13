@@ -45,7 +45,8 @@ define( [], function() {
 
 
       //  console.log(m2x,m2w);
-if (test) setTest(m1x,m1y,m1w,m1h);
+      if (test) setTest(m1x,m1y,m1w,m1h);
+      
        if (    m1x >= m2x + m2w
            ||  m1x + m1w <= m2x
            ||  m1y >= m2y + m2h

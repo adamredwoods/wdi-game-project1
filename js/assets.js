@@ -14,7 +14,10 @@ define([], function() {
        {id: "tree", src:"./img/tree.png"},
        {id: "vt323", src:"./img/vt323_32pt.png"},
        {id: "beam", src:"./img/beam.png"},
-       {id: "mothership", src:".img/mothership.png"}
+       {id: "mothership", src:"./img/mothership.png"},
+       {id: "tank", src:"./img/tank.png"},
+       {id: "tankgun", src:"./img/tank_gun.png"},
+       {id: "tankbullet", src:"./img/tank_bullet.png"}
    ]
 
    var stage;
@@ -28,7 +31,9 @@ define([], function() {
       images.bg = queue.getResult("bg");
       images.tree = queue.getResult("tree");
       images.shadow = queue.getResult("shadow");
-
+      images.tank = queue.getResult("tank");
+      images.tankGun = queue.getResult("tankgun");
+      images.tankBullet = queue.getResult("tankbullet");
 
 
       var data = {
