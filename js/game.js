@@ -17,13 +17,14 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
 
    var score=0;
 
-
+   //
+   //-- per tick update everything
    function stageTick(event) {
       updateLandscape();
 
       ufo.update();
       human.update(ufo.getMoveData().mapPosition);
-      tank.update(ufo.getMoveData().mapPosition);
+      tank.update(ufo.getMoveData().mapPosition, ufo);
       updateMothership();
 
       updateUI();
@@ -35,8 +36,8 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
    //--
    //-- start and init everything
    //
-   function start(st) {
-      stage = st;
+   function start(_stage) {
+      stage = _stage;
 
       createjs.Ticker.addEventListener("tick", stageTick);
       //createjs.Ticker.timingMode = createjs.Ticker.RAF;
@@ -165,6 +166,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
    }
 
    function updateCollisions() {
+
       if (ufo.getMoveData().beamAlpha> 0.1) {
          human.checkBeamCollision(ufo.getBeam());
          if (human.checkUFOCollision(ufo.getUFO()) >0) {
