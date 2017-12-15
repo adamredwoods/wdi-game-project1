@@ -1,4 +1,4 @@
-define( ["assets", "collision", "explosion"], function(assets, collision, explosion) {
+define( ["assets", "collision", "explosion", "keyboard"], function(assets, collision, explosion, keyboard) {
 
    //var FPS = 24;
    var VELOCITY = 10.0*(60/FPS);
@@ -25,33 +25,7 @@ define( ["assets", "collision", "explosion"], function(assets, collision, explos
    var moveX =0, moveY=0, angle=0, accelX=0, accelY=0, dirX=0, dirY=0, mapPosition=0;
    var ufoDamage =0;
 
-   var Key = {
-      pressed: [],
 
-      LEFT: 37,
-      UP: 38,
-      RIGHT: 39,
-      DOWN: 40,
-      SPACE: 32,
-
-      isDown: function(keycode) {
-         return this.pressed[keycode];
-      },
-
-      onKeyDown: function(event) {
-         if (event.keyCode < 100) {
-            this.pressed[event.keyCode] = true;
-            event.preventDefault();
-         }
-      },
-
-      onKeyUp: function(event) {
-         if (event.keyCode < 100) {
-            this.pressed[event.keyCode]=0;
-            event.preventDefault();
-         }
-      }
-   };
 
    function init(st) {
       stage = st;
@@ -86,12 +60,12 @@ define( ["assets", "collision", "explosion"], function(assets, collision, explos
          beam.alpha = 0.0;
 
          humanSprite = new createjs.Sprite(assets.images.human,"run");
-
-         keyboardListeners();
       }
 
-      entity.x = 300;
-      entity.y = 200;
+      entity.alpha = 1.0;
+
+      entity.x = stage.canvas.width*0.5;
+      entity.y = stage.canvas.height*0.3;
       entity.rotation = 10;
    }
 
@@ -153,7 +127,7 @@ define( ["assets", "collision", "explosion"], function(assets, collision, explos
       beam.x = entity.x;
       beam.y = entity.y+100;
 
-      if (Key.pressed[Key.SPACE]===true) {
+      if (keyboard.isDown(keyboard.SPACE)===true) {
          beamAlpha = (beamAlpha<1.0) ? beamAlpha+BEAMALPHASPEED : 1.0;
       } else {
          beamAlpha = (beamAlpha>0.0) ? beamAlpha-BEAMALPHASPEED : 0.0;
@@ -196,27 +170,27 @@ define( ["assets", "collision", "explosion"], function(assets, collision, explos
       let movingX = 0, movingY = 0;
       let curdirX = 0, curdirY =0;
 
-      if (Key.pressed[Key.LEFT]===true) {
+      if (keyboard.isDown(keyboard.LEFT)===true) {
          accelX -= ACCELERATION;
          dirX = -1;
          angle -= ANGLEMOVE;
          movingX = 1;
 
       }
-      if (Key.pressed[Key.RIGHT]===true) {
+      if (keyboard.isDown(keyboard.RIGHT)===true) {
          // entity.x = entity.x + VELOCITY*accel;
          accelX += ACCELERATION;
          dirX = 1;
          angle += ANGLEMOVE;
          movingX =1;
       }
-      if (Key.pressed[Key.UP]===true) {
+      if (keyboard.isDown(keyboard.UP)===true) {
          // entity.y = entity.y + -VELOCITY*accel;
          dirY = -1;
          accelY -= ACCELERATION;
          movingY =1;
       }
-      if (Key.pressed[Key.DOWN]===true) {
+      if (keyboard.isDown(keyboard.DOWN)===true) {
          accelY += ACCELERATION;
          dirY = 1;
          movingY =1;
@@ -245,8 +219,6 @@ define( ["assets", "collision", "explosion"], function(assets, collision, explos
          accelY = (accelY<0.1 && accelY>-0.1) ? 0.0 : accelY;
       }
 
-
-
       entity.x = entity.x + accelX*VELOCITY;
       entity.y = entity.y + accelY*VELOCITY + GRAVITY; //slowly fall
 
@@ -271,10 +243,15 @@ define( ["assets", "collision", "explosion"], function(assets, collision, explos
       return entity;
    }
 
-   function keyboardListeners() {
-      document.addEventListener("keydown", Key.onKeyDown.bind(Key));
-      document.addEventListener('keyup', Key.onKeyUp.bind(Key));
+   function hideUFO() {
+      entity.alpha = 0.0;
    }
+
+   function showUFO() {
+      entity.alpha = 1.0;
+   }
+
+
 
    //-- return a score if human is delivered to mothership
    function checkMothershipCollision(ms) {
@@ -294,6 +271,8 @@ define( ["assets", "collision", "explosion"], function(assets, collision, explos
       getDamage : getDamage,
       addDamage : addDamage,
       addCaptured : addCaptured,
-      checkMothershipCollision : checkMothershipCollision
+      checkMothershipCollision : checkMothershipCollision,
+      hideUFO : hideUFO,
+      showUFO : showUFO
    }
 });

@@ -10,6 +10,19 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
    var humanIcon;
    var damageBar;
 
+   var screen,
+      currentScreen =0,
+      nextScr =0;
+
+   var TITLE=1,
+      LOSE=2,
+      WIN=3;
+
+   var screenAsset = {
+      titlescreen : 0,
+      losescreen : 0
+   }
+
    function init(_stage){
       stage = _stage;
       let stageWidth = stage.canvas.width;
@@ -19,8 +32,6 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
 
       //-- add things to layers
       scoreLayer = new createjs.Container();
-      //var vt = new createjs.Bitmap(assets.images.vt323);
-      console.log(bitmapFont.bitmapFont);
 
       txt.score = new createjs.BitmapText("",bitmapFont.bitmapFont);
       scoreLayer.addChild(txt.score);
@@ -49,6 +60,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       damageBar.y = stageHeight*0.08;
       scoreLayer.addChild(damageBar);
 
+      initScreen();
       // var g = new createjs.Graphics();
       // g.f("#ff0000").drawRect(0,0,100,100);
       // scoreLayer.addChild(new createjs.Shape(g));
@@ -78,12 +90,70 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
    }
 
    function showLose() {
-      
+
+   }
+
+   function setScreen(n) {
+      currentScreen = n;
+   }
+
+   function setNextScreen(n) {
+      nextScr = n;
+   }
+
+   function clearScreen() {
+      currentScreen = 0;
+   }
+
+   function updateScreen() {
+
+      if (currentScreen===0) {
+         screen.alpha=0.0;
+         return 0;
+      }
+
+      let i=1;
+      for (var ss in screenAsset) {
+         if (i===currentScreen && ss) {
+            stage.removeChild(screen);
+            screen = screenAsset[ss];
+            stage.addChild(screen);
+         }
+         i++;
+      }
+
+      screen.x = stage.canvas.width*0.5-screen.width*0.5;
+      screen.y = stage.canvas.height*0.5-screen.height*0.5;
+   }
+
+   function initScreen() {
+      screen = new createjs.Container();
+      stage.addChild(screen);
+
+      screenAsset.titlescreen = new createjs.Bitmap(assets.images.titlescreen);
+      //screenAsset.titlescreen = new createjs.Bitmap(assets.images.tank);
+      screenAsset.titlescreen.name = "titlescreen";
+
+      screenAsset.losescreen = new createjs.Container();
+      var g = new createjs.Bitmap(assets.images.panelscreen);
+      screenAsset.losescreen.addChild(g);
+      var txt = new createjs.BitmapText("You lose. try again.",bitmapFont.bitmapFont);
+      txt.addChild(screenAsset.losescreen);
+      txt.x = 400;
+      txt.y = 100;
+
    }
 
    return {
       init : init,
-      updateScoreLayer : updateScoreLayer
+      updateScoreLayer : updateScoreLayer,
+      updateScreen : updateScreen,
+      setScreen : setScreen,
+      setNextScreen : setNextScreen,
+      clearScreen : clearScreen,
+      TITLE : TITLE,
+      LOSE : LOSE,
+      WIN : WIN
    }
 
 });

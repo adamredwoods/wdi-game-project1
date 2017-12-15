@@ -26,6 +26,7 @@ require(["game", "assets"], function(game,assets) {
 
       assets.init(queue, stage);
       game.start(stage);
+      game.startScreen();
 
    }
 

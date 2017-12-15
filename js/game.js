@@ -1,4 +1,4 @@
-define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, human, tank, assets, ui, collision) {
+define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard"], function(ufo, human, tank, assets, ui, collision, keyboard) {
 
    var STARS_OFFSET = -512;
    var MOTHERSHIP_SPEED = 3.0;
@@ -16,11 +16,12 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
       human:0,
       bg:0
    };
-   var pause=false;
-
-   var mothership;
-
-   var score=0;
+   var pause=false,
+      currentScreen=0,
+      nextScr=0,
+      mothership,
+      score=0,
+      restart=0;
 
    //
    //-- per tick update everything
@@ -34,6 +35,15 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
          updateMothership();
 
          updateCollisions();
+      } else {
+         if (keyboard.isDown(keyboard.KEY_B)) {
+            pause = false;
+            ui.clearScreen();
+
+            if(restart) {
+               restartGame();
+            }
+         }
       }
 
       updateUI();
@@ -50,13 +60,24 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
       //createjs.Ticker.timingMode = createjs.Ticker.RAF;
       createjs.Ticker.framerate = FPS;
 
-      ui.init(stage);
+      keyboard.init();
+      restartGame();
+
+      updateUI();
+
+   }
+
+   function restartGame() {
+      restart =0;
+      while(stage.getChildAt(0)) {
+         stage.removeChildAt(0);
+      }
+console.log("RESTART");
       initLandscape();
       ufo.init(stage);
       human.init(stage, assets.TERRAIN_SIZE, TOTAL_START_HUMANS);
       tank.init(stage, assets.TERRAIN_SIZE);
-
-      updateUI();
+      ui.init(stage);
 
    }
 
@@ -64,6 +85,10 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
       return ufo.getMoveData().mapPosition;
    }
 
+   function startScreen() {
+      gamePause();
+      ui.setScreen(ui.TITLE);
+   }
 
 
    //
@@ -202,27 +227,31 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
 
       if (tank.checkTankBulletUFOCollision(ufo.getUFO())){
          ufo.addDamage(TANK_BULLET_DAMAGE, UFO_MAX_DAMAGE);
-         if (ufo.getDamage()>UFO_MAX_DAMAGE) {
-            //-- GAME over
-            gameOver();
-         }
       }
 
       ufo.addDamage(0,UFO_MAX_DAMAGE); //update bounce damage
+      if (ufo.getDamage()>=UFO_MAX_DAMAGE) {
+         //-- GAME over
+         gameOver();
+      }
    }
 
    function updateUI() {
       ui.updateScoreLayer(score, human.getTotalHumans()-score, 1.0-(ufo.getDamage()/UFO_MAX_DAMAGE));
+      ui.updateScreen();
    }
 
    function gameOver() {
       gamePause();
-      ui.showLose();
+      restart = 1;
+      ufo.hideUFO();
+      ui.setScreen(ui.LOSE);
    }
 
    function gameWin() {
       gamePause();
-      ui.showWin();
+      restart = 1;
+      ui.setScreen(ui.WIN);
    }
 
    function gamePause() {
@@ -235,6 +264,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
 
    return {
       start: start,
-      getWorldPosition: getWorldPosition
+      getWorldPosition: getWorldPosition,
+      startScreen : startScreen
    }
 });

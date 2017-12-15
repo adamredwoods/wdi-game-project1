@@ -18,6 +18,8 @@ define([], function() {
        {id: "tank", src:"./img/tank.png"},
        {id: "tankgun", src:"./img/tank_gun.png"},
        {id: "tankbullet", src:"./img/tank_bullet.png"},
+       {id: "titlescreen", src: "./img/title-screen.png"},
+       {id: "panelscreen", src: "./img/panel-screen.png"},
        {id: "explode", src:"./img/explode.png"}
    ]
 
@@ -35,7 +37,8 @@ define([], function() {
       images.tank = queue.getResult("tank");
       images.tankGun = queue.getResult("tankgun");
       images.tankBullet = queue.getResult("tankbullet");
-
+      images.titlescreen = queue.getResult("titlescreen");
+      images.panelscreen = queue.getResult("panelscreen");
 
       var data = {
          images: ["./img/alien.png"],
