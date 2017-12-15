@@ -8,6 +8,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       humansRemaining: 0
    };
    var humanIcon;
+   var damageBar;
 
    function init(_stage){
       stage = _stage;
@@ -24,14 +25,14 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       txt.score = new createjs.BitmapText("",bitmapFont.bitmapFont);
       scoreLayer.addChild(txt.score);
       stage.addChild(scoreLayer);
-      txt.score.x = stageWidth*0.8;
-      txt.score.y = stageWidth*0.02;
+      txt.score.x = stageWidth*0.82;
+      txt.score.y = stageHeight*0.01;
 
       txt.humansRemaining = new createjs.BitmapText("",bitmapFont.bitmapFont);
       scoreLayer.addChild(txt.humansRemaining);
       stage.addChild(scoreLayer);
       txt.humansRemaining.x = stageWidth*0.1;
-      txt.humansRemaining.y = stageWidth*0.02;
+      txt.humansRemaining.y = stageHeight*0.02;
 
 
       txt.score.text="000";
@@ -40,6 +41,13 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       scoreLayer.addChild(humanIcon);
       humanIcon.x = txt.humansRemaining.x - 20;
       humanIcon.y = txt.humansRemaining.y -10;
+
+      var g =new createjs.Graphics();
+      g.f("#800000").drawRect(0,0,100,20);
+      damageBar = new createjs.Shape(g);
+      damageBar.x = stageWidth*0.8;
+      damageBar.y = stageHeight*0.08;
+      scoreLayer.addChild(damageBar);
 
       // var g = new createjs.Graphics();
       // g.f("#ff0000").drawRect(0,0,100,100);
@@ -54,13 +62,15 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       return s;
    }
 
-   function updateScoreLayer(score,humansLeft) {
+   function updateScoreLayer(score,humansLeft, damagePercent) {
       //-- keep these layers over all other things on the stage
       stage.setChildIndex( scoreLayer, stage.getNumChildren()-1);
       scoreLayer.visible = true;
 
       txt.score.text=addZeros(score,3);
       txt.humansRemaining.text = addZeros(humansLeft,3);
+
+      damageBar.scaleX = damagePercent;
    }
 
    return {

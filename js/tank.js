@@ -1,14 +1,18 @@
 define(["assets", "collision"], function(assets, collision) {
    var NUM_TANKS = 10;
-   var TANK_RANDOM_MOVE = 50;
-   var TANK_SPEED = 3;
-   var AIM_DIST = 600;
+   var TANK_RANDOM_MOVE = 80;
+   var TANK_SPEED = 6;
+   var AIM_XDIST = 600;
+   var AIM_YDIST = 600*0.75;
+   var TANKGUN_LENGTH = 64;
+   var TANK_SHOOT_TIME = 200; //ms
 
    var stage, stageHeight;
    var tank, tankGun, bullet, bulletLayer;
    var tankList=[];
    var bulletList = [];
    var _worldPosition;
+   var terrainWidth;
 
    function init(_stage, maxland) {
       stage = _stage;
@@ -34,7 +38,7 @@ define(["assets", "collision"], function(assets, collision) {
 
       //--place some tanks randomly
       //-- don't place tanks on the first terrain where the mothership is
-      let terrainWidth = (maxland-1)*stage.canvas.width;
+      terrainWidth = (maxland-1)*stage.canvas.width;
 
       for (var i=0; i<NUM_TANKS; i++) {
          let tt = tank.clone(true);
@@ -52,8 +56,9 @@ define(["assets", "collision"], function(assets, collision) {
       }
    }
 
-   //-- needs: sourceX in world, sourceY, destX in world, destY
-   function createBullet( sourceX, sourceY, destX, destY, lengthX ) {
+   //-- needs: sourceX in screen, sourceY, destX in screen, destY
+
+   function createBullet( sourceX, sourceY, destX, destY ) {
       var bb = bullet.clone();
       bulletLayer.addChild(bb);
 
@@ -61,11 +66,13 @@ define(["assets", "collision"], function(assets, collision) {
       bb.y = sourceY;
       bb.name = "tb";
 
+      // let len2 = sourceX - destX;    //-- need: distanceX (lengthX) between src and dest
+
       //separate tweens to mimic gravity and arcing
       let dx = Math.abs(sourceX-destX);
       let dy = Math.abs(sourceY-destY);
       let t = (dx>dy) ? dx/1000*5000 : dy/1000*5000;
-      createjs.Tween.get(bb).to({x:(destX-lengthX)},t)
+      createjs.Tween.get(bb).to({x:(destX-(sourceX-destX))},t)
       createjs.Tween.get(bb).to({y:destY}, t*0.5, createjs.Ease.quadOut).call(function () {
          createjs.Tween.get(bb).to({y:sourceY}, t*0.5, createjs.Ease.quadIn).call(function() {
             bulletLayer.removeChild(bb);
@@ -77,6 +84,18 @@ define(["assets", "collision"], function(assets, collision) {
       bulletLayer.x = worldPosition;
    }
 
+   function checkBounds(tt) {
+      if (tt.offsetX > -stage.canvas.width) {
+         tt.dirX = -1;
+         tt.offsetX = -stage.canvas.width;
+      }
+      if (tt.offsetX < -(terrainWidth)) {
+         tt.dirX = 1;
+         tt.offsetX = -terrainWidth;
+      }
+
+
+   }
 
    function update(_worldPosition, ufo) {
       worldPosition = _worldPosition;
@@ -101,8 +120,9 @@ define(["assets", "collision"], function(assets, collision) {
          let xx = tankList[i].x - ufo.getUFO().x;
          let yy = tankList[i].y - ufo.getUFO().y;
          let tankAim = false;
+         let rotRadians =0.0;
 
-         if (xx < AIM_DIST && xx >-AIM_DIST && yy<AIM_DIST*0.75) {
+         if (xx < AIM_XDIST && xx >-AIM_XDIST && yy<AIM_YDIST) {
             tankAim = true;
          }
 
@@ -110,11 +130,11 @@ define(["assets", "collision"], function(assets, collision) {
             rot += tankList[i].gunDir*1.0;
          } else {
 
-            //-- aim at ufo
+            //-- aim tankgun at ufo
             let c = Math.sqrt(xx*xx + yy*yy);
-            //let cc = xx*xx+yy*yy;
-            rot = Math.asin(yy/c)*180/Math.PI-90;
-            if (xx <0 ) rot = -rot;
+            rotRadians = Math.atan(xx/yy);//-Math.PI/2;
+            rot = -rotRadians*180/Math.PI; //rotRadians*180/Math.PI-90;
+            //if (xx <0 ) rot = -rot;
          }
 
          if (rot > 90) {
@@ -127,11 +147,15 @@ define(["assets", "collision"], function(assets, collision) {
          }
          tankList[i].getChildAt(0).rotation = rot;
 
+         checkBounds(tankList[i]);
+
          if (tankAim && tankList[i].shootTimer<createjs.Ticker.getTime()) {
             //-- shoot a bullet
-            createBullet(tankList[i].offsetX, tankList[i].y, ufo.getUFO().x-worldPosition, ufo.getUFO().y, xx);
+            // createBullet(tankList[i].offsetX, tankList[i].y, ufo.getUFO().x-worldPosition, ufo.getUFO().y, xx);
+            //console.log(Math.cos(rotRadians+Math.PI/2),rotRadians,xx);
+            createBullet(tankList[i].offsetX+60+TANKGUN_LENGTH*Math.cos(rotRadians+Math.PI/2), tankList[i].y+30-TANKGUN_LENGTH*Math.sin(rotRadians+Math.PI/2), ufo.getUFO().x-worldPosition, ufo.getUFO().y);
             // console.log(tankList[i].offsetX,ufo.getUFO().x-worldPosition);
-            tankList[i].shootTimer = createjs.Ticker.getTime()+2000;
+            tankList[i].shootTimer = createjs.Ticker.getTime()+TANK_SHOOT_TIME;
          }
       }
 

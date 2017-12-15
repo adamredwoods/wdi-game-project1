@@ -2,6 +2,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
 
    var STARS_OFFSET = -512;
    var MOTHERSHIP_SPEED = 3.0;
+   var UFO_MAX_DAMAGE = 20;
 
    var stage;
    var s;
@@ -15,7 +16,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
 
    var mothership;
 
-   var score=0;
+   var score=0, ufoDamage=0;
 
    //
    //-- per tick update everything
@@ -125,6 +126,11 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
          landscape[n].offset = terrainWidth;
          stage.addChild(landscape[n]);
 
+         landscape[n+1] = new createjs.Container();
+         landscape[n+1].addChild(assets.groundShape());
+         landscape[n+1].offset = -terrainWidth*(assets.TERRAIN_SIZE);
+         stage.addChild(landscape[n+1]);
+
          mothership = new createjs.Sprite(assets.images.mothership, "run");
          landscape[n].addChild(mothership);
          mothership.x = terrainWidth * 0.5;
@@ -176,12 +182,25 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
 
       let sc = ufo.checkMothershipCollision(mothership);
       score += sc;
+      if (sc) {
+         ufoDamage--;
+         if (ufoDamage<0) {
+            ufoDamage=0;
+         }
+      }
 
-      tank.checkTankBulletUFOCollision(ufo.getUFO());
+      if (tank.checkTankBulletUFOCollision(ufo.getUFO())){
+         ufoDamage++;
+         if (ufoDamage>UFO_MAX_DAMAGE) {
+            //-- GAME over
+            ufoDamage = UFO_MAX_DAMAGE;
+
+         }
+      }
    }
 
    function updateUI() {
-      ui.updateScoreLayer(score, human.getTotalHumans()-score);
+      ui.updateScoreLayer(score, human.getTotalHumans()-score, 1.0-ufoDamage/UFO_MAX_DAMAGE);
    }
 
 
