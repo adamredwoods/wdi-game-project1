@@ -1,4 +1,4 @@
-define( ["assets", "collision"], function(assets, collision) {
+define( ["assets", "collision", "explosion"], function(assets, collision, explosion) {
 
    //var FPS = 24;
    var VELOCITY = 10.0*(60/FPS);
@@ -23,6 +23,7 @@ define( ["assets", "collision"], function(assets, collision) {
    var stage;
    var humanSprite, capturedList=[], mothershipTick=0;
    var moveX =0, moveY=0, angle=0, accelX=0, accelY=0, dirX=0, dirY=0, mapPosition=0;
+   var ufoDamage =0;
 
    var Key = {
       pressed: [],
@@ -105,7 +106,34 @@ define( ["assets", "collision"], function(assets, collision) {
       }
    }
 
+   function getDamage() {
+      return ufoDamage;
+   }
+
+   function addDamage(n,maxDamage) {
+      ufoDamage += n;
+      if (ufoDamage>maxDamage) {
+         ufoDamage = maxDamage;
+      }
+      if (ufoDamage<0) {
+         ufoDamage =0;
+      }
+   }
+
+   function hitGround() {
+      //-- ufo hit ground, add damage according to accelX and bounce up
+      ufoDamage += Math.floor(Math.abs(accelX)*5)+1;
+      dirY = -1;
+      accelY = -1;
+      explosion.create(entity.x, entity.y+30, stage);
+   }
+
    function boundsCheck() {
+
+      if (entity.y >= BOUNDS.bottom) {
+         hitGround();
+      }
+
       entity.y = (entity.y<BOUNDS.top) ? BOUNDS.top : entity.y;
       entity.y = (entity.y>BOUNDS.bottom) ? BOUNDS.bottom : entity.y;
       entity.x = (entity.x<BOUNDS.left) ? BOUNDS.left : entity.x;
@@ -114,6 +142,10 @@ define( ["assets", "collision"], function(assets, collision) {
       if (mapPosition < -stage.canvas.width) {
          //entity.x = BOUNDS.right;
          mapPosition = -stage.canvas.width;
+      }
+
+      if (mapPosition > (assets.TERRAIN_SIZE-0.5)*stage.canvas.width) {
+         mapPosition = (assets.TERRAIN_SIZE-0.5)*stage.canvas.width;
       }
    }
 
@@ -163,7 +195,6 @@ define( ["assets", "collision"], function(assets, collision) {
       //console.log(entity.x);
       let movingX = 0, movingY = 0;
       let curdirX = 0, curdirY =0;
-
 
       if (Key.pressed[Key.LEFT]===true) {
          accelX -= ACCELERATION;
@@ -260,6 +291,8 @@ define( ["assets", "collision"], function(assets, collision) {
       getMoveData: getMoveData,
       getBeam: getBeam,
       getUFO : getUFO,
+      getDamage : getDamage,
+      addDamage : addDamage,
       addCaptured : addCaptured,
       checkMothershipCollision : checkMothershipCollision
    }

@@ -2,18 +2,19 @@ define( ["assets", "game", "collision"], function(assets, game, collision) {
 
    var HUMAN_RANDOM_MOVE = 25;
    var HUMAN_SPEED = 4;
-   var HUMAN_FLY_SPEED = 2;
+   var HUMAN_FLY_SPEED = 5;
    var GRAVITY = 5;
 
    var stage;
-   var numHumans = 30;
+   var numHumans;
    var human = [];
    var maxland =0; //remember how big everything is
    var testblock;
 
-   function init(st, _maxland) {
+   function init(st, _maxland, _totalHumans) {
       stage = st;
       maxland = _maxland;
+      numHumans = _totalHumans;
 
       var humanSprite = new createjs.Sprite(assets.images.human,"run");
       humanSprite.setBounds(35,15,2,2);

@@ -73,6 +73,14 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       damageBar.scaleX = damagePercent;
    }
 
+   function showWin() {
+
+   }
+
+   function showLose() {
+      
+   }
+
    return {
       init : init,
       updateScoreLayer : updateScoreLayer

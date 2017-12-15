@@ -1,11 +1,11 @@
-define(["assets", "collision"], function(assets, collision) {
+define(["assets", "collision", "explosion"], function(assets, collision, explosion) {
    var NUM_TANKS = 10;
    var TANK_RANDOM_MOVE = 80;
    var TANK_SPEED = 6;
    var AIM_XDIST = 600;
    var AIM_YDIST = 600*0.75;
    var TANKGUN_LENGTH = 64;
-   var TANK_SHOOT_TIME = 200; //ms
+   var TANK_SHOOT_TIME = 600; //ms
 
    var stage, stageHeight;
    var tank, tankGun, bullet, bulletLayer;
@@ -164,15 +164,15 @@ define(["assets", "collision"], function(assets, collision) {
 
    }
 
-   function createExplosion(x,y) {
-      let ee = new createjs.Sprite(assets.images.explode, "run");
-      stage.addChild(ee);
-      ee.x = worldPosition+x;
-      ee.y = y;
-      ee.addEventListener("animationend",function() {
-         stage.removeChild(ee);
-      });
-   }
+   // function createExplosion(x,y) {
+   //    let ee = new createjs.Sprite(assets.images.explode, "run");
+   //    stage.addChild(ee);
+   //    ee.x = worldPosition+x;
+   //    ee.y = y;
+   //    ee.addEventListener("animationend",function() {
+   //       stage.removeChild(ee);
+   //    });
+   // }
 
    function checkTankBulletUFOCollision(obj) {
       let hit=false;
@@ -181,7 +181,7 @@ define(["assets", "collision"], function(assets, collision) {
          if (c.name === "tb" && collision.checkCollision(c, obj)) {
             createjs.Tween.removeTweens(c);
             c.name="";
-            createExplosion(c.x,c.y);
+            explosion.create(c.x+worldPosition,c.y,stage);
             bulletLayer.removeChild(c);
             hit=true;
          }

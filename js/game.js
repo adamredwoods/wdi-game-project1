@@ -3,6 +3,9 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
    var STARS_OFFSET = -512;
    var MOTHERSHIP_SPEED = 3.0;
    var UFO_MAX_DAMAGE = 20;
+   var TANK_BULLET_DAMAGE = 1;
+   var MOTHERSHIP_FIX_DAMAGE = 1;
+   var TOTAL_START_HUMANS = 20;
 
    var stage;
    var s;
@@ -13,24 +16,27 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
       human:0,
       bg:0
    };
+   var pause=false;
 
    var mothership;
 
-   var score=0, ufoDamage=0;
+   var score=0;
 
    //
    //-- per tick update everything
    function stageTick(event) {
-      updateLandscape();
+      if (!pause) {
+         updateLandscape();
 
-      ufo.update();
-      human.update(ufo.getMoveData().mapPosition);
-      tank.update(ufo.getMoveData().mapPosition, ufo);
-      updateMothership();
+         ufo.update();
+         human.update(ufo.getMoveData().mapPosition);
+         tank.update(ufo.getMoveData().mapPosition, ufo);
+         updateMothership();
+
+         updateCollisions();
+      }
 
       updateUI();
-      updateCollisions();
-
       stage.update(event); //-- make sure event is passed to update
    }
 
@@ -47,7 +53,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
       ui.init(stage);
       initLandscape();
       ufo.init(stage);
-      human.init(stage, assets.TERRAIN_SIZE);
+      human.init(stage, assets.TERRAIN_SIZE, TOTAL_START_HUMANS);
       tank.init(stage, assets.TERRAIN_SIZE);
 
       updateUI();
@@ -68,6 +74,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
 
          var terrainWidth = stage.canvas.width;
 
+         //--make stars
          landscapeStars = new createjs.Container();
          landscapeStars.addChild(new createjs.Bitmap(assets.images.bg));
 
@@ -85,6 +92,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
          stage.addChild(landscapeStars2);
          landscapeStars2.x = -1024;
 
+         //-- terrain images
          let hill = new createjs.Graphics();
          hill.beginFill("#403530").drawEllipse(0,405,500,360);
          hill = new createjs.Shape(hill);
@@ -92,6 +100,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
          let tree = new createjs.Bitmap(assets.images.tree);
          tree.regY = 256;
 
+         //--make all tiles, random
          for (var i=0; i< assets.TERRAIN_SIZE; i++) {
             landscape[i] = new createjs.Container();
 
@@ -131,6 +140,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
          landscape[n+1].offset = -terrainWidth*(assets.TERRAIN_SIZE);
          stage.addChild(landscape[n+1]);
 
+         //--make mothership
          mothership = new createjs.Sprite(assets.images.mothership, "run");
          landscape[n].addChild(mothership);
          mothership.x = terrainWidth * 0.5;
@@ -183,26 +193,45 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
       let sc = ufo.checkMothershipCollision(mothership);
       score += sc;
       if (sc) {
-         ufoDamage--;
-         if (ufoDamage<0) {
-            ufoDamage=0;
-         }
+         ufo.addDamage(-MOTHERSHIP_FIX_DAMAGE,UFO_MAX_DAMAGE);
+      }
+      if (score >= TOTAL_START_HUMANS) {
+         //-- Win Game
+         gameWin();
       }
 
       if (tank.checkTankBulletUFOCollision(ufo.getUFO())){
-         ufoDamage++;
-         if (ufoDamage>UFO_MAX_DAMAGE) {
+         ufo.addDamage(TANK_BULLET_DAMAGE, UFO_MAX_DAMAGE);
+         if (ufo.getDamage()>UFO_MAX_DAMAGE) {
             //-- GAME over
-            ufoDamage = UFO_MAX_DAMAGE;
-
+            gameOver();
          }
       }
+
+      ufo.addDamage(0,UFO_MAX_DAMAGE); //update bounce damage
    }
 
    function updateUI() {
-      ui.updateScoreLayer(score, human.getTotalHumans()-score, 1.0-ufoDamage/UFO_MAX_DAMAGE);
+      ui.updateScoreLayer(score, human.getTotalHumans()-score, 1.0-(ufo.getDamage()/UFO_MAX_DAMAGE));
    }
 
+   function gameOver() {
+      gamePause();
+      ui.showLose();
+   }
+
+   function gameWin() {
+      gamePause();
+      ui.showWin();
+   }
+
+   function gamePause() {
+      pause = true;
+   }
+
+   function gameResume() {
+      pause = false;
+   }
 
    return {
       start: start,
