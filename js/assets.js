@@ -17,7 +17,8 @@ define([], function() {
        {id: "mothership", src:"./img/mothership.png"},
        {id: "tank", src:"./img/tank.png"},
        {id: "tankgun", src:"./img/tank_gun.png"},
-       {id: "tankbullet", src:"./img/tank_bullet.png"}
+       {id: "tankbullet", src:"./img/tank_bullet.png"},
+       {id: "explode", src:"./img/explode.png"}
    ]
 
    var stage;
@@ -77,6 +78,16 @@ define([], function() {
          }
       };
       images.mothership =  new createjs.SpriteSheet(data);
+
+      var data = {
+         images: ["./img/explode.png"],
+         frames: {width:64, height:64, regX: 32, regY: 32, next:false},
+         framerate: 12,
+         animations: {
+            run: [0,6]
+         }
+      };
+      images.explode =  new createjs.SpriteSheet(data);
 
    }
 

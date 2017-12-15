@@ -176,6 +176,8 @@ define(["ufo", "human", "tank", "assets", "ui", "collision"], function(ufo, huma
 
       let sc = ufo.checkMothershipCollision(mothership);
       score += sc;
+
+      tank.checkTankBulletUFOCollision(ufo.getUFO());
    }
 
    function updateUI() {

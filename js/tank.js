@@ -1,4 +1,4 @@
-define(["assets"], function(assets) {
+define(["assets", "collision"], function(assets, collision) {
    var NUM_TANKS = 10;
    var TANK_RANDOM_MOVE = 50;
    var TANK_SPEED = 3;
@@ -8,6 +8,7 @@ define(["assets"], function(assets) {
    var tank, tankGun, bullet, bulletLayer;
    var tankList=[];
    var bulletList = [];
+   var _worldPosition;
 
    function init(_stage, maxland) {
       stage = _stage;
@@ -58,6 +59,7 @@ define(["assets"], function(assets) {
 
       bb.x = sourceX;
       bb.y = sourceY;
+      bb.name = "tb";
 
       //separate tweens to mimic gravity and arcing
       let dx = Math.abs(sourceX-destX);
@@ -76,7 +78,8 @@ define(["assets"], function(assets) {
    }
 
 
-   function update(worldPosition, ufo) {
+   function update(_worldPosition, ufo) {
+      worldPosition = _worldPosition;
 
       for(var i=0; i<tankList.length; i++) {
 
@@ -133,10 +136,38 @@ define(["assets"], function(assets) {
       }
 
       updateBulletLayer(worldPosition);
+
+
+   }
+
+   function createExplosion(x,y) {
+      let ee = new createjs.Sprite(assets.images.explode, "run");
+      stage.addChild(ee);
+      ee.x = worldPosition+x;
+      ee.y = y;
+      ee.addEventListener("animationend",function() {
+         stage.removeChild(ee);
+      });
+   }
+
+   function checkTankBulletUFOCollision(obj) {
+      let hit=false;
+      for(let i=0; i<bulletLayer.children.length; i++) {
+         let c = bulletLayer.getChildAt(i);
+         if (c.name === "tb" && collision.checkCollision(c, obj)) {
+            createjs.Tween.removeTweens(c);
+            c.name="";
+            createExplosion(c.x,c.y);
+            bulletLayer.removeChild(c);
+            hit=true;
+         }
+      }
+      return hit;
    }
 
    return {
       init : init,
-      update: update
+      update: update,
+      checkTankBulletUFOCollision : checkTankBulletUFOCollision
    }
 });
