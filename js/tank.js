@@ -9,32 +9,33 @@ define(["assets", "collision", "explosion"], function(assets, collision, explosi
 
    var stage, stageHeight;
    var tank, tankGun, bullet, bulletLayer;
-   var tankList=[];
-   var bulletList = [];
+   var tankList;
+   var bulletList;
    var _worldPosition;
    var terrainWidth;
 
    function init(_stage, maxland) {
       stage = _stage;
       stageHeight = stage.canvas.height;
+      tankList = [];
+      bulletList = [];
 
-      if (!tank) {
-         tank = new createjs.Container();
-         tankGun = new createjs.Bitmap(assets.images.tankGun);
-         tankGun.regX = 8;
-         tankGun.regY = 64;
-         let body = new createjs.Bitmap(assets.images.tank);
-         tank.addChild(tankGun);
-         tank.addChild(body);
-         tankGun.y = 40;
-         tankGun.x = 65;
+      tank = new createjs.Container();
+      tankGun = new createjs.Bitmap(assets.images.tankGun);
+      tankGun.regX = 8;
+      tankGun.regY = 64;
+      let body = new createjs.Bitmap(assets.images.tank);
+      tank.addChild(tankGun);
+      tank.addChild(body);
+      tankGun.y = 40;
+      tankGun.x = 65;
 
-         bullet = new createjs.Bitmap(assets.images.tankBullet);
+      bullet = new createjs.Bitmap(assets.images.tankBullet);
 
-         //-- bulletLayer is NOT stationary. moves with worldPosition to control all bullets.
-         bulletLayer = new createjs.Container();
-         stage.addChild(bulletLayer);
-      }
+      //-- bulletLayer is NOT stationary. moves with worldPosition to control all bullets.
+      bulletLayer = new createjs.Container();
+      stage.addChild(bulletLayer);
+
 
       //--place some tanks randomly
       //-- don't place tanks on the first terrain where the mothership is

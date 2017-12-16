@@ -4,12 +4,10 @@ require(["game", "assets"], function(game,assets) {
 
    var stage, canvas, queue;
 
-
    function initCanvas() {
       canvas = document.getElementById("canvas");
       canvas.style.backgroundColor = "#000";
       stage = new createjs.Stage("canvas");
-
    }
 
    function loadImages() {
@@ -18,22 +16,15 @@ require(["game", "assets"], function(game,assets) {
       queue.on("complete", loadComplete, this);
       // queue.loadFile({id:"sound", src:"http://path/to/sound.mp3"});
       queue.loadManifest(assets.files);
-
-
    }
 
    function loadComplete() {
-
       assets.init(queue, stage);
       game.start(stage);
       game.startScreen();
-
    }
-
-
 
    initCanvas();
    loadImages();
-
 
 });

@@ -28,7 +28,9 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       let stageWidth = stage.canvas.width;
       let stageHeight = stage.canvas.height;
 
-      //-- put text sheet here
+      //-- reset
+      currenScreen =0;
+
 
       //-- add things to layers
       scoreLayer = new createjs.Container();
@@ -130,17 +132,34 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       screen = new createjs.Container();
       stage.addChild(screen);
 
-      screenAsset.titlescreen = new createjs.Bitmap(assets.images.titlescreen);
+      var g, txt;
+
+      screenAsset.titlescreen = new createjs.Container();
+      g = new createjs.Bitmap(assets.images.titlescreen);
+      screenAsset.titlescreen.addChild(g);
       //screenAsset.titlescreen = new createjs.Bitmap(assets.images.tank);
       screenAsset.titlescreen.name = "titlescreen";
+      txt = new createjs.BitmapText("Based on real events. Hollywood movie pending.",bitmapFont.bitmapFont);
+      txt.x = 110;
+      txt.y = 400;
+      screenAsset.titlescreen.addChild(txt);
+      txt = new createjs.BitmapText("Press 'B' to start",bitmapFont.bitmapFont);
+      txt.x = 350;
+      txt.y = 450;
+      screenAsset.titlescreen.addChild(txt);
 
       screenAsset.losescreen = new createjs.Container();
-      var g = new createjs.Bitmap(assets.images.panelscreen);
+      g = new createjs.Bitmap(assets.images.panelscreen);
       screenAsset.losescreen.addChild(g);
-      var txt = new createjs.BitmapText("You lose. try again.",bitmapFont.bitmapFont);
-      txt.addChild(screenAsset.losescreen);
-      txt.x = 400;
-      txt.y = 100;
+      txt = new createjs.BitmapText("You lose. try again.",bitmapFont.bitmapFont);
+      txt.x = 200;
+      txt.y = 200;
+      screenAsset.losescreen.addChild(txt);
+      txt = new createjs.BitmapText("Press 'B' to start",bitmapFont.bitmapFont);
+      txt.x = 200;
+      txt.y = 300;
+      screenAsset.losescreen.addChild(txt);
+
 
    }
 

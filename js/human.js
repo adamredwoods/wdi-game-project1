@@ -7,7 +7,7 @@ define( ["assets", "game", "collision"], function(assets, game, collision) {
 
    var stage;
    var numHumans;
-   var human = [];
+   var human;
    var maxland =0; //remember how big everything is
    var testblock;
 
@@ -15,6 +15,7 @@ define( ["assets", "game", "collision"], function(assets, game, collision) {
       stage = st;
       maxland = _maxland;
       numHumans = _totalHumans;
+      human = [];
 
       var humanSprite = new createjs.Sprite(assets.images.human,"run");
       humanSprite.setBounds(35,15,2,2);

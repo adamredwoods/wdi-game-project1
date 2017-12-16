@@ -21,7 +21,7 @@ define( ["assets", "collision", "explosion", "keyboard"], function(assets, colli
    var entityShadow;
    var beam, beamAlpha=0.0, beamMask;
    var stage;
-   var humanSprite, capturedList=[], mothershipTick=0;
+   var humanSprite, capturedList, mothershipTick=0;
    var moveX =0, moveY=0, angle=0, accelX=0, accelY=0, dirX=0, dirY=0, mapPosition=0;
    var ufoDamage =0;
 
@@ -30,37 +30,40 @@ define( ["assets", "collision", "explosion", "keyboard"], function(assets, colli
    function init(st) {
       stage = st;
 
-      if (!entity) {
-         entityShadow = new createjs.Bitmap(assets.images.shadow);
-         entityShadow.alpha = 0.1;
-         entityShadow.y = BOUNDS.bottom+50;
-         entityShadow.scaleX = entityShadow.scaleY = 3;
-         stage.addChild(entityShadow);
+      ufoDamage =0;
+      mapPosition =0;
+      capturedList = [];
 
-         entity = new createjs.Container();
-         entity.setBounds(-70,-50,160,120);
-         var ufo = new createjs.Sprite(assets.images.ufo, "run");
-         entity.addChild(ufo);
-         stage.addChild(entity);
+      entityShadow = new createjs.Bitmap(assets.images.shadow);
+      entityShadow.alpha = 0.1;
+      entityShadow.y = BOUNDS.bottom+50;
+      entityShadow.scaleX = entityShadow.scaleY = 3;
+      stage.addChild(entityShadow);
 
-         beam = new createjs.Container();
-         var b2 = new createjs.Sprite(assets.images.beam, "run");
-         //stage.addChild(beam);
-         beam.addChild(b2);
+      entity = new createjs.Container();
+      entity.setBounds(-70,-50,160,120);
+      var ufo = new createjs.Sprite(assets.images.ufo, "run");
+      entity.addChild(ufo);
+      stage.addChild(entity);
 
-         beam.setBounds(0,-100,100,500);
-         //console.log(beam);
+      beam = new createjs.Container();
+      var b2 = new createjs.Sprite(assets.images.beam, "run");
+      //stage.addChild(beam);
+      beam.addChild(b2);
 
-         var g = new createjs.Graphics().beginFill("#ff0000").drawRect(-100, 0, 200, 200);
-         beamMask = new createjs.Shape(g);
-         beam.addChild(beamMask);
-         b2.mask = beamMask;
-         beamMask.visible = false;
-         stage.addChild(beam);
-         beam.alpha = 0.0;
+      beam.setBounds(0,-100,100,500);
+      //console.log(beam);
 
-         humanSprite = new createjs.Sprite(assets.images.human,"run");
-      }
+      var g = new createjs.Graphics().beginFill("#ff0000").drawRect(-100, 0, 200, 200);
+      beamMask = new createjs.Shape(g);
+      beam.addChild(beamMask);
+      b2.mask = beamMask;
+      beamMask.visible = false;
+      stage.addChild(beam);
+      beam.alpha = 0.0;
+
+      humanSprite = new createjs.Sprite(assets.images.human,"run");
+
 
       entity.alpha = 1.0;
 
