@@ -58,8 +58,6 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard", "landsc
    function restartGame() {
       restart =0;
       score =0;
-      ui.setScreen(ui.TITLE);
-      gamePause();
 
       //-- clear stage and re-init
       while(stage.getChildAt(0)) {
@@ -71,9 +69,8 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard", "landsc
       human.init(stage, assets.TERRAIN_SIZE, TOTAL_START_HUMANS);
       tank.init(stage, assets.TERRAIN_SIZE);
       ui.init(stage);
-
-      assets.sounds.music.play("music");
-      assets.sounds.music.volume = 0.5;
+      ui.setScreen(ui.TITLE);
+      gamePause();
    }
 
    function getWorldPosition() {
@@ -117,8 +114,9 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard", "landsc
 
    function gameTitleScreen() {
       gamePause();
-      lastScreen  = -1;
       ui.setScreen(ui.TITLE);
+      assets.sounds.music.play("music");
+      assets.sounds.music.volume = 0.5;
    }
 
    function gamePlay() {

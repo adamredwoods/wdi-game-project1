@@ -62,7 +62,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       scoreLayer.addChild(damageBar);
 
       initScreenPanels();
-
+      clearScreen();
    }
 
    function addZeros(sc, num) {
@@ -90,6 +90,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
    }
 
    function clearScreen() {
+      lastScreen = 0;
       currentScreen = 0;
    }
 
@@ -97,6 +98,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
 
       if (currentScreen===0) {
          screen.alpha=0.0;
+         lastScreen = currentScreen;
          return 0;
       }
 
@@ -112,12 +114,13 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       }
 
       if (lastScreen !== currentScreen) {
-         console.log("slide");
+         screen.y = -500;
+         createjs.Tween.get(screen).to({y:stage.canvas.height*0.5-screen.getBounds().height*0.5},500,createjs.Ease.quadOut);
          lastScreen = currentScreen;
       }
 
       screen.x = stage.canvas.width*0.5-screen.getBounds().width*0.5;
-      screen.y = stage.canvas.height*0.5-screen.getBounds().height*0.5;
+      //screen.y = stage.canvas.height*0.5-screen.getBounds().height*0.5;
    }
 
    function initScreenPanels() {
