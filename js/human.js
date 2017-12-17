@@ -37,7 +37,7 @@ define( ["assets", "game", "collision"], function(assets, game, collision) {
 
    function checkBounds(i) {
       human[i].y = (human[i].y>500) ? 500 : human[i].y;
-      human[i].offset = (human[i].offset<(-maxland*stage.canvas.width)) ? (-maxland*stage.canvas.width) : human[i].offset;
+      human[i].offset = (human[i].offset<(-(maxland-0.5)*stage.canvas.width)) ? (-maxland*stage.canvas.width) : human[i].offset;
    }
 
    function update(worldPosition) {

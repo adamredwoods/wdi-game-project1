@@ -21,7 +21,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard"], functi
       score=0,
       restart=0;
 
-   //
+   //-- main game loop
    //-- per tick update everything
    function stageTick(event) {
       if (!pause) {
@@ -34,7 +34,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard"], functi
 
          updateCollisions();
       } else {
-         if (keyboard.isDown(keyboard.KEY_B)) {
+         if (keyboard.isTap(keyboard.KEY_B)) {
             gameResume();
 
             if(restart) {
@@ -60,18 +60,21 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard"], functi
       keyboard.init();
       restartGame();
 
-      updateUI();
    }
 
    function restartGame() {
       restart =0;
       score =0;
-      ui.clearScreen();
+      ui.setScreen(ui.TITLE);
+      gamePause();
 
+      //-- clear stage and re-init
       while(stage.getChildAt(0)) {
          stage.removeChildAt(0);
       }
-console.log("RESTART");
+
+      console.log("RESTART");
+
       initLandscape();
       ufo.init(stage);
       human.init(stage, assets.TERRAIN_SIZE, TOTAL_START_HUMANS);
@@ -83,12 +86,6 @@ console.log("RESTART");
    function getWorldPosition() {
       return ufo.getMoveData().mapPosition;
    }
-
-   function startScreen() {
-      gamePause();
-      ui.setScreen(ui.TITLE);
-   }
-
 
    //
    //-- start setting up the landscape and terrain
@@ -238,6 +235,11 @@ console.log("RESTART");
    function updateUI() {
       ui.updateScoreLayer(score, human.getTotalHumans()-score, 1.0-(ufo.getDamage()/UFO_MAX_DAMAGE));
       ui.updateScreen();
+   }
+
+   function startScreen() {
+      gamePause();
+      ui.setScreen(ui.TITLE);
    }
 
    function gameOver() {

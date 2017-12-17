@@ -14,13 +14,17 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       currentScreen =0,
       nextScr =0;
 
-   var TITLE=1,
+   //-- each screen in numerated in order to the order in screenAsset
+   //-- 0 screen allows play to continue
+   var CONTINUE=0,
+      TITLE=1,
       LOSE=2,
       WIN=3;
 
    var screenAsset = {
       titlescreen : 0,
-      losescreen : 0
+      losescreen : 0,
+      winscreen: 0
    }
 
    function init(_stage){
@@ -87,20 +91,8 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       damageBar.scaleX = damagePercent;
    }
 
-   function showWin() {
-
-   }
-
-   function showLose() {
-
-   }
-
    function setScreen(n) {
       currentScreen = n;
-   }
-
-   function setNextScreen(n) {
-      nextScr = n;
    }
 
    function clearScreen() {
@@ -114,6 +106,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
          return 0;
       }
 
+      //--each screen in the number in
       let i=1;
       for (var ss in screenAsset) {
          if (i===currentScreen && ss) {
@@ -124,8 +117,8 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
          i++;
       }
 
-      screen.x = stage.canvas.width*0.5-screen.width*0.5;
-      screen.y = stage.canvas.height*0.5-screen.height*0.5;
+      screen.x = stage.canvas.width*0.5-screen.getBounds().width*0.5;
+      screen.y = stage.canvas.height*0.5-screen.getBounds().height*0.5;
    }
 
    function initScreen() {
@@ -134,32 +127,68 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
 
       var g, txt;
 
+      //--make the different screens
       screenAsset.titlescreen = new createjs.Container();
       g = new createjs.Bitmap(assets.images.titlescreen);
       screenAsset.titlescreen.addChild(g);
       //screenAsset.titlescreen = new createjs.Bitmap(assets.images.tank);
       screenAsset.titlescreen.name = "titlescreen";
-      txt = new createjs.BitmapText("Based on real events. Hollywood movie pending.",bitmapFont.bitmapFont);
-      txt.x = 110;
-      txt.y = 400;
+
+      txt = new createjs.BitmapText("To play: use 'SPACE' to grab humans. Arrow keys to fly.",bitmapFont.bitmapFont);
+      txt.x = 180;
+      txt.y = 380;
+      txt.scaleX = txt.scaleY = 0.7;
+      screenAsset.titlescreen.addChild(txt);
+      txt = new createjs.BitmapText("Bring to mothership. Don't crash.",bitmapFont.bitmapFont);
+      txt.x = 290;
+      txt.y = 420;
+      txt.scaleX = txt.scaleY = 0.7;
       screenAsset.titlescreen.addChild(txt);
       txt = new createjs.BitmapText("Press 'B' to start",bitmapFont.bitmapFont);
-      txt.x = 350;
-      txt.y = 450;
+      txt.x = 340;
+      txt.y = 460;
       screenAsset.titlescreen.addChild(txt);
+      txt = new createjs.BitmapText("Based on real events. Hollywood movie pending.",bitmapFont.bitmapFont);
+      txt.x = 310;
+      txt.y = 550;
+      txt.scaleX = txt.scaleY = 0.5;
+      screenAsset.titlescreen.addChild(txt);
+      txt = new createjs.BitmapText("Music by: rolemusic.sawsquarenoise.com   Graphics by: Adam Redwoods",bitmapFont.bitmapFont);
+      txt.x = 210;
+      txt.y = 580;
+      txt.scaleX = txt.scaleY = 0.5;
+      screenAsset.titlescreen.addChild(txt);
+
+      //http://rolemusic.sawsquarenoise.com/
 
       screenAsset.losescreen = new createjs.Container();
       g = new createjs.Bitmap(assets.images.panelscreen);
       screenAsset.losescreen.addChild(g);
       txt = new createjs.BitmapText("You lose. try again.",bitmapFont.bitmapFont);
-      txt.x = 200;
+      txt.x = 340;
       txt.y = 200;
       screenAsset.losescreen.addChild(txt);
-      txt = new createjs.BitmapText("Press 'B' to start",bitmapFont.bitmapFont);
-      txt.x = 200;
+      txt = new createjs.BitmapText("Press 'B' to restart",bitmapFont.bitmapFont);
+      txt.x = 350;
       txt.y = 300;
       screenAsset.losescreen.addChild(txt);
 
+
+      screenAsset.winscreen = new createjs.Container();
+      g = new createjs.Bitmap(assets.images.panelscreen);
+      screenAsset.winscreen.addChild(g);
+      txt = new createjs.BitmapText("I don't know how, but you did it!",bitmapFont.bitmapFont);
+      txt.x = 300;
+      txt.y = 200;
+      screenAsset.winscreen.addChild(txt);
+      txt = new createjs.BitmapText("We have enough food to get home...",bitmapFont.bitmapFont);
+      txt.x = 300;
+      txt.y = 250;
+      screenAsset.winscreen.addChild(txt);
+      txt = new createjs.BitmapText("Press 'B' to restart",bitmapFont.bitmapFont);
+      txt.x = 350;
+      txt.y = 350;
+      screenAsset.winscreen.addChild(txt);
 
    }
 
@@ -168,11 +197,11 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       updateScoreLayer : updateScoreLayer,
       updateScreen : updateScreen,
       setScreen : setScreen,
-      setNextScreen : setNextScreen,
       clearScreen : clearScreen,
       TITLE : TITLE,
       LOSE : LOSE,
-      WIN : WIN
+      WIN : WIN,
+      CONTINUE : CONTINUE
    }
 
 });

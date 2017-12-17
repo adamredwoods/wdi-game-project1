@@ -3,7 +3,7 @@ define(["assets", "collision", "explosion"], function(assets, collision, explosi
    var TANK_RANDOM_MOVE = 80;
    var TANK_SPEED = 6;
    var AIM_XDIST = 600;
-   var AIM_YDIST = 600*0.75;
+   var AIM_YDIST = 600*0.65;
    var TANKGUN_LENGTH = 64;
    var TANK_SHOOT_TIME = 600; //ms
 
@@ -123,7 +123,8 @@ define(["assets", "collision", "explosion"], function(assets, collision, explosi
          let tankAim = false;
          let rotRadians =0.0;
 
-         if (xx < AIM_XDIST && xx >-AIM_XDIST && yy<AIM_YDIST) {
+         // two conditions: be within X distance and have beam on, or be able to escape if the beam is off.
+         if ((xx < AIM_XDIST && xx >-AIM_XDIST && yy<AIM_YDIST) || (xx < AIM_XDIST && xx >-AIM_XDIST && ufo.getBeam().alpha>0.1)) {
             tankAim = true;
          }
 
@@ -165,15 +166,6 @@ define(["assets", "collision", "explosion"], function(assets, collision, explosi
 
    }
 
-   // function createExplosion(x,y) {
-   //    let ee = new createjs.Sprite(assets.images.explode, "run");
-   //    stage.addChild(ee);
-   //    ee.x = worldPosition+x;
-   //    ee.y = y;
-   //    ee.addEventListener("animationend",function() {
-   //       stage.removeChild(ee);
-   //    });
-   // }
 
    function checkTankBulletUFOCollision(obj) {
       let hit=false;

@@ -31,7 +31,7 @@ define( ["assets", "collision", "explosion", "keyboard"], function(assets, colli
       stage = st;
 
       ufoDamage =0;
-      mapPosition =0;
+      moveX =0, moveY=0, angle=0, accelX=0, accelY=0, dirX=0, dirY=0, mapPosition =0;
       capturedList = [];
 
       entityShadow = new createjs.Bitmap(assets.images.shadow);
@@ -137,8 +137,9 @@ define( ["assets", "collision", "explosion", "keyboard"], function(assets, colli
       }
       beam.alpha = beamAlpha;
 
+      //--shrink closer to ground
       beamMask.scaleY = (720-entity.y)/720;
-      beam.scaleY = (600-entity.y)/600*2.8;
+      beam.scaleY = (500-entity.y)/500*3.2;
    }
 
    //-- adds a sprite into the player ufo
