@@ -16,6 +16,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard"], functi
       human:0,
       bg:0
    };
+
    var pause=false,
       mothership,
       score=0,
@@ -35,11 +36,7 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard"], functi
          updateCollisions();
       } else {
          if (keyboard.isTap(keyboard.KEY_B)) {
-            gameResume();
-
-            if(restart) {
-               restartGame();
-            }
+            gamePlay();
          }
       }
 
@@ -81,6 +78,8 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard"], functi
       tank.init(stage, assets.TERRAIN_SIZE);
       ui.init(stage);
 
+      assets.sounds.music.play("music");
+      assets.sounds.music.volume = 0.5;
    }
 
    function getWorldPosition() {
@@ -240,6 +239,15 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard"], functi
    function startScreen() {
       gamePause();
       ui.setScreen(ui.TITLE);
+   }
+
+   function gamePlay() {
+      gameResume();
+      assets.sounds.music.stop();
+
+      if(restart) {
+         restartGame();
+      }
    }
 
    function gameOver() {

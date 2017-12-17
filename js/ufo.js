@@ -132,14 +132,18 @@ define( ["assets", "collision", "explosion", "keyboard"], function(assets, colli
 
       if (keyboard.isDown(keyboard.SPACE)===true) {
          beamAlpha = (beamAlpha<1.0) ? beamAlpha+BEAMALPHASPEED : 1.0;
+         assets.sounds.beam.play();
       } else {
          beamAlpha = (beamAlpha>0.0) ? beamAlpha-BEAMALPHASPEED : 0.0;
+         assets.sounds.beam.stop();
       }
       beam.alpha = beamAlpha;
 
       //--shrink closer to ground
       beamMask.scaleY = (720-entity.y)/720;
       beam.scaleY = (500-entity.y)/500*3.2;
+
+
    }
 
    //-- adds a sprite into the player ufo
@@ -150,6 +154,8 @@ define( ["assets", "collision", "explosion", "keyboard"], function(assets, colli
       entity.setChildIndex( h, 0);
       h.x = Math.random()*50-10;
       h.y = Math.random()*20-50;
+
+      assets.sounds.points.play();
    }
 
    //-- move these off-screen
@@ -157,12 +163,13 @@ define( ["assets", "collision", "explosion", "keyboard"], function(assets, colli
       if (capturedList.length>0 && mothershipTick<createjs.Ticker.getTime()) {
          let h = capturedList.pop();
          entity.removeChild();
-         // capturedList.pop();
          stage.addChild(h);
          h.x = entity.x+20;
          h.y = entity.y-50;
          createjs.Tween.get(h).to({y:-100, rotation: Math.random()*720},3000);
          mothershipTick = createjs.Ticker.getTime()+1000;
+
+         assets.sounds.points.play();
 
          return 1;
       }

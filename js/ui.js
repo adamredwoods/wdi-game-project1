@@ -12,6 +12,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
 
    var screen,
       currentScreen =0,
+      lastScreen =0,
       nextScr =0;
 
    //-- each screen in numerated in order to the order in screenAsset
@@ -24,7 +25,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
    var screenAsset = {
       titlescreen : 0,
       losescreen : 0,
-      winscreen: 0
+      winscreen : 0
    }
 
    function init(_stage){
@@ -34,7 +35,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
 
       //-- reset
       currenScreen =0;
-
+      lastScreen = -1;
 
       //-- add things to layers
       scoreLayer = new createjs.Container();
@@ -42,7 +43,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       txt.score = new createjs.BitmapText("",bitmapFont.bitmapFont);
       scoreLayer.addChild(txt.score);
       stage.addChild(scoreLayer);
-      txt.score.x = stageWidth*0.82;
+      txt.score.x = stageWidth*0.90;
       txt.score.y = stageHeight*0.01;
 
       txt.humansRemaining = new createjs.BitmapText("",bitmapFont.bitmapFont);
@@ -62,7 +63,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       var g =new createjs.Graphics();
       g.f("#800000").drawRect(0,0,100,20);
       damageBar = new createjs.Shape(g);
-      damageBar.x = stageWidth*0.8;
+      damageBar.x = stageWidth*0.88;
       damageBar.y = stageHeight*0.08;
       scoreLayer.addChild(damageBar);
 
@@ -92,6 +93,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
    }
 
    function setScreen(n) {
+      lastScreen = currentScreen;
       currentScreen = n;
    }
 
@@ -115,6 +117,11 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
             stage.addChild(screen);
          }
          i++;
+      }
+
+      if (lastScreen !== currentScreen) {
+         console.log("slide");
+         lastScreen = currentScreen;
       }
 
       screen.x = stage.canvas.width*0.5-screen.getBounds().width*0.5;
@@ -145,12 +152,12 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       txt.scaleX = txt.scaleY = 0.7;
       screenAsset.titlescreen.addChild(txt);
       txt = new createjs.BitmapText("Press 'B' to start",bitmapFont.bitmapFont);
-      txt.x = 340;
-      txt.y = 460;
+      txt.x = 350;
+      txt.y = 510;
       screenAsset.titlescreen.addChild(txt);
       txt = new createjs.BitmapText("Based on real events. Hollywood movie pending.",bitmapFont.bitmapFont);
       txt.x = 310;
-      txt.y = 550;
+      txt.y = 565;
       txt.scaleX = txt.scaleY = 0.5;
       screenAsset.titlescreen.addChild(txt);
       txt = new createjs.BitmapText("Music by: rolemusic.sawsquarenoise.com   Graphics by: Adam Redwoods",bitmapFont.bitmapFont);
@@ -165,12 +172,12 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       g = new createjs.Bitmap(assets.images.panelscreen);
       screenAsset.losescreen.addChild(g);
       txt = new createjs.BitmapText("You lose. try again.",bitmapFont.bitmapFont);
-      txt.x = 340;
-      txt.y = 200;
+      txt.x = 270;
+      txt.y = 190;
       screenAsset.losescreen.addChild(txt);
       txt = new createjs.BitmapText("Press 'B' to restart",bitmapFont.bitmapFont);
-      txt.x = 350;
-      txt.y = 300;
+      txt.x = 280;
+      txt.y = 290;
       screenAsset.losescreen.addChild(txt);
 
 
@@ -178,15 +185,15 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       g = new createjs.Bitmap(assets.images.panelscreen);
       screenAsset.winscreen.addChild(g);
       txt = new createjs.BitmapText("I don't know how, but you did it!",bitmapFont.bitmapFont);
-      txt.x = 300;
+      txt.x = 190;
       txt.y = 200;
       screenAsset.winscreen.addChild(txt);
       txt = new createjs.BitmapText("We have enough food to get home...",bitmapFont.bitmapFont);
-      txt.x = 300;
+      txt.x = 190;
       txt.y = 250;
       screenAsset.winscreen.addChild(txt);
       txt = new createjs.BitmapText("Press 'B' to restart",bitmapFont.bitmapFont);
-      txt.x = 350;
+      txt.x = 270;
       txt.y = 350;
       screenAsset.winscreen.addChild(txt);
 

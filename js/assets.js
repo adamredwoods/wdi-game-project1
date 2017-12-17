@@ -3,6 +3,7 @@ define([], function() {
    var TERRAIN_SIZE = 10;
 
    var images = {};
+   var sounds = {};
 
    var bitmapFont;
 
@@ -20,8 +21,15 @@ define([], function() {
        {id: "tankbullet", src:"./img/tank_bullet.png"},
        {id: "titlescreen", src: "./img/title-screen.png"},
        {id: "panelscreen", src: "./img/panel-screen.png"},
-       {id: "explode", src:"./img/explode.png"}
+       {id: "explode", src:"./img/explode.png"},
+       {id: "music", src:"./audio/rolemusi_-_05_-_05_rolemusic_-_the_black_frame.mp3"},
+       {id: "explosion-sound", src:"./audio/explosion.mp3"},
+       {id: "beam-sound", src:"./audio/beam.mp3"},
+       {id: "points-sound", src:"./audio/points.mp3"},
+       {id: "tankbullet-sound", src:"./audio/tankbullet.mp3"}
    ]
+
+   var sounds = {};
 
    var stage;
 
@@ -29,8 +37,6 @@ define([], function() {
 
       stage = _stage;
 
-      //  createjs.Sound.play("sound");
-      //images.human = queue.getResult("human");
       images.bg = queue.getResult("bg");
       images.tree = queue.getResult("tree");
       images.shadow = queue.getResult("shadow");
@@ -39,6 +45,12 @@ define([], function() {
       images.tankBullet = queue.getResult("tankbullet");
       images.titlescreen = queue.getResult("titlescreen");
       images.panelscreen = queue.getResult("panelscreen");
+
+      sounds.music = createjs.Sound.createInstance("music");
+      sounds.explosion = createjs.Sound.createInstance("explosion-sound");
+      sounds.beam = createjs.Sound.createInstance("beam-sound");
+      sounds.points = createjs.Sound.createInstance("points-sound");
+      sounds.tankBullet = createjs.Sound.createInstance("tankbullet-sound");
 
       var data = {
          images: ["./img/alien.png"],
@@ -49,7 +61,6 @@ define([], function() {
          }
       };
       images.ufo =  new createjs.SpriteSheet(data);
-      // new createjs.Sprite(spriteSheet, "run");
 
       data = {
          images: ["./img/beam.png"],
@@ -109,6 +120,7 @@ define([], function() {
    return {
       images: images,
       files: files,
+      sounds : sounds,
       init: init,
       groundShape: groundShape,
       TERRAIN_SIZE: TERRAIN_SIZE

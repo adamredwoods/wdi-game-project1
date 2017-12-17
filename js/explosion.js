@@ -8,6 +8,8 @@ define(["assets"], function(assets) {
       ee.addEventListener("animationend",function() {
          stage.removeChild(ee);
       });
+
+      assets.sounds.explosion.play();
    }
 
    return {

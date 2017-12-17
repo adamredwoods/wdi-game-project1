@@ -12,7 +12,7 @@ require(["game", "assets"], function(game,assets) {
 
    function loadImages() {
       queue = new createjs.LoadQueue();
-      // queue.installPlugin(createjs.Sound);
+      queue.installPlugin(createjs.Sound);
       queue.on("complete", loadComplete, this);
       // queue.loadFile({id:"sound", src:"http://path/to/sound.mp3"});
       queue.loadManifest(assets.files);
@@ -22,6 +22,8 @@ require(["game", "assets"], function(game,assets) {
       assets.init(queue, stage);
       game.start(stage);
       game.startScreen();
+
+      document.getElementById("loading-txt").style.display = "none";
    }
 
    initCanvas();

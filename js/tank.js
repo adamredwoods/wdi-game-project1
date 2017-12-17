@@ -152,10 +152,10 @@ define(["assets", "collision", "explosion"], function(assets, collision, explosi
          checkBounds(tankList[i]);
 
          if (tankAim && tankList[i].shootTimer<createjs.Ticker.getTime()) {
+
             //-- shoot a bullet
-            // createBullet(tankList[i].offsetX, tankList[i].y, ufo.getUFO().x-worldPosition, ufo.getUFO().y, xx);
-            //console.log(Math.cos(rotRadians+Math.PI/2),rotRadians,xx);
             createBullet(tankList[i].offsetX+60+TANKGUN_LENGTH*Math.cos(rotRadians+Math.PI/2), tankList[i].y+30-TANKGUN_LENGTH*Math.sin(rotRadians+Math.PI/2), ufo.getUFO().x-worldPosition, ufo.getUFO().y);
+            assets.sounds.tankBullet.play();
             // console.log(tankList[i].offsetX,ufo.getUFO().x-worldPosition);
             tankList[i].shootTimer = createjs.Ticker.getTime()+TANK_SHOOT_TIME;
          }
