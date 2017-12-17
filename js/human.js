@@ -30,9 +30,10 @@ define( ["assets", "game", "collision"], function(assets, game, collision) {
          hh.beamingStart = false;
       }
 
-      var g = new createjs.Graphics();
-      testblock = new createjs.Shape(g.f("#ff0000").drawRect(0,0,10,10));
-      stage.addChild(testblock);
+      //--testblock for collision testing
+      //var g = new createjs.Graphics();
+      //testblock = new createjs.Shape(g.f("#ff0000").drawRect(0,0,10,10));
+      //stage.addChild(testblock);
    }
 
    function checkBounds(i) {

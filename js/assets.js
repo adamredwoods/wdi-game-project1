@@ -108,7 +108,7 @@ define([], function() {
 
    function groundShape() {
       var g = new createjs.Graphics();
-      g.beginFill("#403530");
+      g.beginFill("#302520");
       g.rect(0, stage.canvas.height*0.7, stage.canvas.width+1.0, stage.canvas.height);
       return new createjs.Shape(g);
    }

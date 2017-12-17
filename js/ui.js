@@ -1,19 +1,14 @@
 define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
 
-   var stage;
-
-   var scoreLayer, introLayer;
+   var stage, scoreLayer, introLayer, humanIcon, damagerBar;
    var txt = {
       score: 0,
       humansRemaining: 0
    };
-   var humanIcon;
-   var damageBar;
 
    var screen,
-      currentScreen =0,
-      lastScreen =0,
-      nextScr =0;
+      currentScreen,
+      lastScreen;
 
    //-- each screen in numerated in order to the order in screenAsset
    //-- 0 screen allows play to continue
@@ -34,10 +29,10 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       let stageHeight = stage.canvas.height;
 
       //-- reset
-      currenScreen =0;
+      currenScreen = 0;
       lastScreen = -1;
 
-      //-- add things to layers
+      //-- init things in score layer
       scoreLayer = new createjs.Container();
 
       txt.score = new createjs.BitmapText("",bitmapFont.bitmapFont);
@@ -51,7 +46,6 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       stage.addChild(scoreLayer);
       txt.humansRemaining.x = stageWidth*0.1;
       txt.humansRemaining.y = stageHeight*0.02;
-
 
       txt.score.text="000";
 
@@ -67,10 +61,8 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       damageBar.y = stageHeight*0.08;
       scoreLayer.addChild(damageBar);
 
-      initScreen();
-      // var g = new createjs.Graphics();
-      // g.f("#ff0000").drawRect(0,0,100,100);
-      // scoreLayer.addChild(new createjs.Shape(g));
+      initScreenPanels();
+
    }
 
    function addZeros(sc, num) {
@@ -128,7 +120,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       screen.y = stage.canvas.height*0.5-screen.getBounds().height*0.5;
    }
 
-   function initScreen() {
+   function initScreenPanels() {
       screen = new createjs.Container();
       stage.addChild(screen);
 
@@ -162,7 +154,7 @@ define( ["assets", "bitmap-font"], function(assets, bitmapFont) {
       screenAsset.titlescreen.addChild(txt);
       txt = new createjs.BitmapText("Music by: rolemusic.sawsquarenoise.com   Graphics by: Adam Redwoods",bitmapFont.bitmapFont);
       txt.x = 210;
-      txt.y = 580;
+      txt.y = 585;
       txt.scaleX = txt.scaleY = 0.5;
       screenAsset.titlescreen.addChild(txt);
 
