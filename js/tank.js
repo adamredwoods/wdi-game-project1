@@ -130,6 +130,7 @@ define(["assets", "collision", "explosion"], function(assets, collision, explosi
 
          if (!tankAim) {
             rot += tankList[i].gunDir*1.0;
+            tankList[i].shootTimer = rot*10;
          } else {
 
             //-- aim tankgun at ufo
@@ -157,7 +158,7 @@ define(["assets", "collision", "explosion"], function(assets, collision, explosi
             createBullet(tankList[i].offsetX+60+TANKGUN_LENGTH*Math.cos(rotRadians+Math.PI/2), tankList[i].y+30-TANKGUN_LENGTH*Math.sin(rotRadians+Math.PI/2), ufo.getUFO().x-worldPosition, ufo.getUFO().y);
             assets.sounds.tankBullet.play();
             // console.log(tankList[i].offsetX,ufo.getUFO().x-worldPosition);
-            tankList[i].shootTimer = createjs.Ticker.getTime()+TANK_SHOOT_TIME;
+            tankList[i].shootTimer = createjs.Ticker.getTime()+TANK_SHOOT_TIME+Math.random()*1000;
          }
       }
 

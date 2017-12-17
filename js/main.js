@@ -20,8 +20,8 @@ require(["game", "assets"], function(game,assets) {
 
    function loadComplete() {
       assets.init(queue, stage);
-      game.start(stage);
-      game.startScreen();
+      game.startGameLoop(stage);
+      game.gameTitleScreen();
 
       document.getElementById("loading-txt").style.display = "none";
    }

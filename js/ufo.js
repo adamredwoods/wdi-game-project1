@@ -263,7 +263,6 @@ define( ["assets", "collision", "explosion", "keyboard"], function(assets, colli
    }
 
 
-
    //-- return a score if human is delivered to mothership
    function checkMothershipCollision(ms) {
       let s=0;

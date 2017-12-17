@@ -42,11 +42,11 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard", "landsc
    //--
    //-- start and init everything
    //
-   function start(_stage) {
+   function startGameLoop(_stage) {
       stage = _stage;
 
       createjs.Ticker.addEventListener("tick", stageTick);
-      //createjs.Ticker.timingMode = createjs.Ticker.RAF;
+      //createjs.Ticker.timingMode = createjs.Ticker.RAF; //--needs time delta
       createjs.Ticker.framerate = FPS;
 
       keyboard.init();
@@ -80,10 +80,8 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard", "landsc
       return ufo.getMoveData().mapPosition;
    }
 
-
-
+   //-- main collision function
    function updateCollisions() {
-
       if (ufo.getMoveData().beamAlpha> 0.1) {
          human.checkBeamCollision(ufo.getBeam());
          if (human.checkUFOCollision(ufo.getUFO()) >0) {
@@ -117,15 +115,15 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard", "landsc
       ui.updateScreen();
    }
 
-   function startScreen() {
+   function gameTitleScreen() {
       gamePause();
+      lastScreen  = -1;
       ui.setScreen(ui.TITLE);
    }
 
    function gamePlay() {
       gameResume();
       assets.sounds.music.stop();
-
       if(restart) {
          restartGame();
       }
@@ -154,8 +152,8 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard", "landsc
    }
 
    return {
-      start: start,
+      startGameLoop: startGameLoop,
       getWorldPosition: getWorldPosition,
-      startScreen : startScreen
+      gameTitleScreen : gameTitleScreen
    }
 });
