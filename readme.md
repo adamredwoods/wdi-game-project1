@@ -23,8 +23,10 @@
 	* Number of terrain tiles dynamic
 	* Terrian size dynamic
 * Get player controls just right
+	* Make the controls "slippery" for challenge
 * Get terrain scrolling, humans roaming
 * Get human pickup working
+	* Floating up, floating down
 * Get tanks working
 	* Bullet physics
 * Get screens working
