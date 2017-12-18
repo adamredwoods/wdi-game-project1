@@ -8,7 +8,8 @@
 * Deploy your game online, where the rest of the world can access it
 * Use semantic markup for HTML and CSS (adhere to best practices)
 
-##Pictures / Stage Progress
+##Pictures / Stage Progress  
+
 ![Screenshot1](./img/screenshot1.jpg)
 ![Screenshot1](./img/screenshot2.jpg)
 ![Screenshot1](./img/screenshot3.jpg)
