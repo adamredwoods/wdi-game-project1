@@ -63,14 +63,13 @@ define(["ufo", "human", "tank", "assets", "ui", "collision", "keyboard", "landsc
       while(stage.getChildAt(0)) {
          stage.removeChildAt(0);
       }
-
       landscape.init(stage);
       ufo.init(stage);
       human.init(stage, assets.TERRAIN_SIZE, TOTAL_START_HUMANS);
       tank.init(stage, assets.TERRAIN_SIZE);
       ui.init(stage);
-      ui.setScreen(ui.TITLE);
-      gamePause();
+
+      gameTitleScreen();
    }
 
    function getWorldPosition() {
